@@ -1,0 +1,48 @@
+{
+  "source": "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/MembersView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Участники",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "Участники",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Добавить участника",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Имя",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "Добавить",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 25
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -6,33 +6,102 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C7211D412E2BA9500026983B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7211D2F2E2BA9500026983B /* Assets.xcassets */; };
+		C7211D422E2BA9500026983B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7211D292E2BA9500026983B /* GoogleService-Info.plist */; };
+		C7211D432E2BA9500026983B /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D372E2BA9500026983B /* AuthView.swift */; };
+		C7211D442E2BA9500026983B /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D362E2BA9500026983B /* AddExpenseView.swift */; };
+		C7211D452E2BA9500026983B /* TripListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D3E2E2BA9500026983B /* TripListView.swift */; };
+		C7211D462E2BA9500026983B /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D3D2E2BA9500026983B /* TripDetailView.swift */; };
+		C7211D472E2BA9500026983B /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D3A2E2BA9500026983B /* MembersView.swift */; };
+		C7211D482E2BA9500026983B /* Chick_ChirikApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D282E2BA9500026983B /* Chick_ChirikApp.swift */; };
+		C7211D492E2BA9500026983B /* SettleUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D3C2E2BA9500026983B /* SettleUpView.swift */; };
+		C7211D4A2E2BA9500026983B /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D342E2BA9500026983B /* AuthViewModel.swift */; };
+		C7211D4B2E2BA9500026983B /* EditExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D382E2BA9500026983B /* EditExpenseView.swift */; };
+		C7211D4C2E2BA9500026983B /* TripModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D2D2E2BA9500026983B /* TripModels.swift */; };
+		C7211D4D2E2BA9500026983B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D3B2E2BA9500026983B /* ProfileView.swift */; };
+		C7211D4E2E2BA9500026983B /* BalanceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D312E2BA9500026983B /* BalanceCalculator.swift */; };
+		C7211D4F2E2BA9500026983B /* ExpenseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D392E2BA9500026983B /* ExpenseRow.swift */; };
+		C7211D502E2BA9500026983B /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7211D2C2E2BA9500026983B /* Item.swift */; };
+		C741422C2E2A653B008385EC /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C741422B2E2A653B008385EC /* FirebaseAuth */; };
+		C741422E2E2A653B008385EC /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C741422D2E2A653B008385EC /* FirebaseFirestore */; };
+		C745B8F42E2BBF190057233C /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8F02E2BBF190057233C /* ProfileViewModel.swift */; };
+		C745B8F52E2BBF190057233C /* SyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8F12E2BBF190057233C /* SyncViewModel.swift */; };
+		C745B8F62E2BBF190057233C /* TripDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8F22E2BBF190057233C /* TripDetailViewModel.swift */; };
+		C745B8F72E2BBF190057233C /* TripListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8F32E2BBF190057233C /* TripListViewModel.swift */; };
+		C745B8FC2E2BC0350057233C /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8F92E2BC0350057233C /* SyncService.swift */; };
+		C745B8FD2E2BC0350057233C /* TripFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8FA2E2BC0350057233C /* TripFirestoreService.swift */; };
+		C745B8FE2E2BC0350057233C /* UserFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8FB2E2BC0350057233C /* UserFirestoreService.swift */; };
+		C745B8FF2E2BC0350057233C /* MemberFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C745B8F82E2BC0350057233C /* MemberFirestoreService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C74142032E29A3C1008385EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C7239F982E26E4ED00FCEE64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C7239F9F2E26E4ED00FCEE64;
+			remoteInfo = "Chick-Chirik";
+		};
+		C74142122E29A3DC008385EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C7239F982E26E4ED00FCEE64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C7239F9F2E26E4ED00FCEE64;
+			remoteInfo = "Chick-Chirik";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		C7211D272E2BA9500026983B /* Chick_Chirik.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chick_Chirik.entitlements; sourceTree = "<group>"; };
+		C7211D282E2BA9500026983B /* Chick_ChirikApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chick_ChirikApp.swift; sourceTree = "<group>"; };
+		C7211D292E2BA9500026983B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C7211D2A2E2BA9500026983B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C7211D2C2E2BA9500026983B /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		C7211D2D2E2BA9500026983B /* TripModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripModels.swift; sourceTree = "<group>"; };
+		C7211D2F2E2BA9500026983B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C7211D312E2BA9500026983B /* BalanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCalculator.swift; sourceTree = "<group>"; };
+		C7211D342E2BA9500026983B /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		C7211D362E2BA9500026983B /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
+		C7211D372E2BA9500026983B /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		C7211D382E2BA9500026983B /* EditExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExpenseView.swift; sourceTree = "<group>"; };
+		C7211D392E2BA9500026983B /* ExpenseRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseRow.swift; sourceTree = "<group>"; };
+		C7211D3A2E2BA9500026983B /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
+		C7211D3B2E2BA9500026983B /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		C7211D3C2E2BA9500026983B /* SettleUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleUpView.swift; sourceTree = "<group>"; };
+		C7211D3D2E2BA9500026983B /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
+		C7211D3E2E2BA9500026983B /* TripListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripListView.swift; sourceTree = "<group>"; };
 		C7239FA02E26E4ED00FCEE64 /* Chick-Chirik.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chick-Chirik.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C74141FF2E29A3C1008385EC /* Chick-ChirikTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Chick-ChirikTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C741420C2E29A3DC008385EC /* Chick-ChirikUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Chick-ChirikUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C745B8F02E2BBF190057233C /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		C745B8F12E2BBF190057233C /* SyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncViewModel.swift; sourceTree = "<group>"; };
+		C745B8F22E2BBF190057233C /* TripDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailViewModel.swift; sourceTree = "<group>"; };
+		C745B8F32E2BBF190057233C /* TripListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripListViewModel.swift; sourceTree = "<group>"; };
+		C745B8F82E2BC0350057233C /* MemberFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberFirestoreService.swift; sourceTree = "<group>"; };
+		C745B8F92E2BC0350057233C /* SyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncService.swift; sourceTree = "<group>"; };
+		C745B8FA2E2BC0350057233C /* TripFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripFirestoreService.swift; sourceTree = "<group>"; };
+		C745B8FB2E2BC0350057233C /* UserFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFirestoreService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C7239FAD2E26E4EF00FCEE64 /* Exceptions for "Chick-Chirik" folder in "Chick-Chirik" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = C7239F9F2E26E4ED00FCEE64 /* Chick-Chirik */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		C7239FA22E26E4ED00FCEE64 /* Chick-Chirik */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				C7239FAD2E26E4EF00FCEE64 /* Exceptions for "Chick-Chirik" folder in "Chick-Chirik" target */,
-			);
-			path = "Chick-Chirik";
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C7239F9D2E26E4ED00FCEE64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C741422C2E2A653B008385EC /* FirebaseAuth in Frameworks */,
+				C741422E2E2A653B008385EC /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C74141FC2E29A3C1008385EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C74142092E29A3DC008385EC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -42,10 +111,91 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C7211D2B2E2BA9500026983B /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C7211D272E2BA9500026983B /* Chick_Chirik.entitlements */,
+				C7211D282E2BA9500026983B /* Chick_ChirikApp.swift */,
+				C7211D292E2BA9500026983B /* GoogleService-Info.plist */,
+				C7211D2A2E2BA9500026983B /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		C7211D2E2E2BA9500026983B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C7211D2C2E2BA9500026983B /* Item.swift */,
+				C7211D2D2E2BA9500026983B /* TripModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C7211D302E2BA9500026983B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C7211D2F2E2BA9500026983B /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C7211D322E2BA9500026983B /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				C745B8F82E2BC0350057233C /* MemberFirestoreService.swift */,
+				C745B8F92E2BC0350057233C /* SyncService.swift */,
+				C745B8FA2E2BC0350057233C /* TripFirestoreService.swift */,
+				C745B8FB2E2BC0350057233C /* UserFirestoreService.swift */,
+				C7211D312E2BA9500026983B /* BalanceCalculator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		C7211D332E2BA9500026983B /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		C7211D352E2BA9500026983B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				C745B8F02E2BBF190057233C /* ProfileViewModel.swift */,
+				C745B8F12E2BBF190057233C /* SyncViewModel.swift */,
+				C745B8F22E2BBF190057233C /* TripDetailViewModel.swift */,
+				C745B8F32E2BBF190057233C /* TripListViewModel.swift */,
+				C7211D342E2BA9500026983B /* AuthViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		C7211D3F2E2BA9500026983B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C7211D362E2BA9500026983B /* AddExpenseView.swift */,
+				C7211D372E2BA9500026983B /* AuthView.swift */,
+				C7211D382E2BA9500026983B /* EditExpenseView.swift */,
+				C7211D392E2BA9500026983B /* ExpenseRow.swift */,
+				C7211D3A2E2BA9500026983B /* MembersView.swift */,
+				C7211D3B2E2BA9500026983B /* ProfileView.swift */,
+				C7211D3C2E2BA9500026983B /* SettleUpView.swift */,
+				C7211D3D2E2BA9500026983B /* TripDetailView.swift */,
+				C7211D3E2E2BA9500026983B /* TripListView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		C7239F972E26E4ED00FCEE64 = {
 			isa = PBXGroup;
 			children = (
-				C7239FA22E26E4ED00FCEE64 /* Chick-Chirik */,
+				C7211D2B2E2BA9500026983B /* App */,
+				C7211D2E2E2BA9500026983B /* Models */,
+				C7211D302E2BA9500026983B /* Resources */,
+				C7211D322E2BA9500026983B /* Services */,
+				C7211D332E2BA9500026983B /* SupportingFiles */,
+				C7211D352E2BA9500026983B /* ViewModels */,
+				C7211D3F2E2BA9500026983B /* Views */,
 				C7239FA12E26E4ED00FCEE64 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +204,8 @@
 			isa = PBXGroup;
 			children = (
 				C7239FA02E26E4ED00FCEE64 /* Chick-Chirik.app */,
+				C74141FF2E29A3C1008385EC /* Chick-ChirikTests.xctest */,
+				C741420C2E29A3DC008385EC /* Chick-ChirikUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -73,15 +225,54 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				C7239FA22E26E4ED00FCEE64 /* Chick-Chirik */,
-			);
 			name = "Chick-Chirik";
 			packageProductDependencies = (
+				C741422B2E2A653B008385EC /* FirebaseAuth */,
+				C741422D2E2A653B008385EC /* FirebaseFirestore */,
 			);
 			productName = "Chick-Chirik";
 			productReference = C7239FA02E26E4ED00FCEE64 /* Chick-Chirik.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C74141FE2E29A3C1008385EC /* Chick-ChirikTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C74142072E29A3C1008385EC /* Build configuration list for PBXNativeTarget "Chick-ChirikTests" */;
+			buildPhases = (
+				C74141FB2E29A3C1008385EC /* Sources */,
+				C74141FC2E29A3C1008385EC /* Frameworks */,
+				C74141FD2E29A3C1008385EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C74142042E29A3C1008385EC /* PBXTargetDependency */,
+			);
+			name = "Chick-ChirikTests";
+			packageProductDependencies = (
+			);
+			productName = "Chick-ChirikTests";
+			productReference = C74141FF2E29A3C1008385EC /* Chick-ChirikTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C741420B2E29A3DC008385EC /* Chick-ChirikUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C74142142E29A3DC008385EC /* Build configuration list for PBXNativeTarget "Chick-ChirikUITests" */;
+			buildPhases = (
+				C74142082E29A3DC008385EC /* Sources */,
+				C74142092E29A3DC008385EC /* Frameworks */,
+				C741420A2E29A3DC008385EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C74142132E29A3DC008385EC /* PBXTargetDependency */,
+			);
+			name = "Chick-ChirikUITests";
+			packageProductDependencies = (
+			);
+			productName = "Chick-ChirikUITests";
+			productReference = C741420C2E29A3DC008385EC /* Chick-ChirikUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -96,6 +287,14 @@
 					C7239F9F2E26E4ED00FCEE64 = {
 						CreatedOnToolsVersion = 16.4;
 					};
+					C74141FE2E29A3C1008385EC = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = C7239F9F2E26E4ED00FCEE64;
+					};
+					C741420B2E29A3DC008385EC = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = C7239F9F2E26E4ED00FCEE64;
+					};
 				};
 			};
 			buildConfigurationList = C7239F9B2E26E4ED00FCEE64 /* Build configuration list for PBXProject "Chick-Chirik" */;
@@ -107,18 +306,39 @@
 			);
 			mainGroup = C7239F972E26E4ED00FCEE64;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C741422A2E2A653B008385EC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C7239FA12E26E4ED00FCEE64 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				C7239F9F2E26E4ED00FCEE64 /* Chick-Chirik */,
+				C74141FE2E29A3C1008385EC /* Chick-ChirikTests */,
+				C741420B2E29A3DC008385EC /* Chick-ChirikUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C7239F9E2E26E4ED00FCEE64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7211D412E2BA9500026983B /* Assets.xcassets in Resources */,
+				C7211D422E2BA9500026983B /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C74141FD2E29A3C1008385EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C741420A2E29A3DC008385EC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -132,10 +352,59 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7211D432E2BA9500026983B /* AuthView.swift in Sources */,
+				C7211D442E2BA9500026983B /* AddExpenseView.swift in Sources */,
+				C745B8FC2E2BC0350057233C /* SyncService.swift in Sources */,
+				C745B8FD2E2BC0350057233C /* TripFirestoreService.swift in Sources */,
+				C745B8FE2E2BC0350057233C /* UserFirestoreService.swift in Sources */,
+				C745B8FF2E2BC0350057233C /* MemberFirestoreService.swift in Sources */,
+				C7211D452E2BA9500026983B /* TripListView.swift in Sources */,
+				C7211D462E2BA9500026983B /* TripDetailView.swift in Sources */,
+				C745B8F42E2BBF190057233C /* ProfileViewModel.swift in Sources */,
+				C745B8F52E2BBF190057233C /* SyncViewModel.swift in Sources */,
+				C745B8F62E2BBF190057233C /* TripDetailViewModel.swift in Sources */,
+				C745B8F72E2BBF190057233C /* TripListViewModel.swift in Sources */,
+				C7211D472E2BA9500026983B /* MembersView.swift in Sources */,
+				C7211D482E2BA9500026983B /* Chick_ChirikApp.swift in Sources */,
+				C7211D492E2BA9500026983B /* SettleUpView.swift in Sources */,
+				C7211D4A2E2BA9500026983B /* AuthViewModel.swift in Sources */,
+				C7211D4B2E2BA9500026983B /* EditExpenseView.swift in Sources */,
+				C7211D4C2E2BA9500026983B /* TripModels.swift in Sources */,
+				C7211D4D2E2BA9500026983B /* ProfileView.swift in Sources */,
+				C7211D4E2E2BA9500026983B /* BalanceCalculator.swift in Sources */,
+				C7211D4F2E2BA9500026983B /* ExpenseRow.swift in Sources */,
+				C7211D502E2BA9500026983B /* Item.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C74141FB2E29A3C1008385EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C74142082E29A3DC008385EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C74142042E29A3C1008385EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C7239F9F2E26E4ED00FCEE64 /* Chick-Chirik */;
+			targetProxy = C74142032E29A3C1008385EC /* PBXContainerItemProxy */;
+		};
+		C74142132E29A3DC008385EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C7239F9F2E26E4ED00FCEE64 /* Chick-Chirik */;
+			targetProxy = C74142122E29A3DC008385EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C7239FAF2E26E4EF00FCEE64 /* Debug */ = {
@@ -143,25 +412,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Chick-Chirik/Chick_Chirik.entitlements";
+				CODE_SIGN_ENTITLEMENTS = App/Chick_Chirik.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 92ASHBF26R;
+				DEVELOPMENT_TEAM = BPX99HKMGP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Chick-Chirik/Info.plist";
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DnmitryVolkov.Chick-Chirik";
+				PRODUCT_BUNDLE_IDENTIFIER = DmitryVolkov.ChickChirik;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -173,25 +444,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "Chick-Chirik/Chick_Chirik.entitlements";
+				CODE_SIGN_ENTITLEMENTS = App/Chick_Chirik.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 92ASHBF26R;
+				DEVELOPMENT_TEAM = BPX99HKMGP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Chick-Chirik/Info.plist";
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DnmitryVolkov.Chick-Chirik";
+				PRODUCT_BUNDLE_IDENTIFIER = DmitryVolkov.ChickChirik;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -231,6 +504,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = App/Chick_Chirik.entitlements;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 92ASHBF26R;
@@ -295,6 +569,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = App/Chick_Chirik.entitlements;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 92ASHBF26R;
@@ -319,6 +594,76 @@
 			};
 			name = Release;
 		};
+		C74142052E29A3C1008385EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 92ASHBF26R;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DnmitryVolkov.Chick-ChirikTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chick-Chirik.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Chick-Chirik";
+			};
+			name = Debug;
+		};
+		C74142062E29A3C1008385EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 92ASHBF26R;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DnmitryVolkov.Chick-ChirikTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chick-Chirik.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Chick-Chirik";
+			};
+			name = Release;
+		};
+		C74142152E29A3DC008385EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 92ASHBF26R;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DnmitryVolkov.Chick-ChirikUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Chick-Chirik";
+			};
+			name = Debug;
+		};
+		C74142162E29A3DC008385EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 92ASHBF26R;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DnmitryVolkov.Chick-ChirikUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Chick-Chirik";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -340,7 +685,49 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		C74142072E29A3C1008385EC /* Build configuration list for PBXNativeTarget "Chick-ChirikTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C74142052E29A3C1008385EC /* Debug */,
+				C74142062E29A3C1008385EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C74142142E29A3DC008385EC /* Build configuration list for PBXNativeTarget "Chick-ChirikUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C74142152E29A3DC008385EC /* Debug */,
+				C74142162E29A3DC008385EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C741422A2E2A653B008385EC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C741422B2E2A653B008385EC /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C741422A2E2A653B008385EC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		C741422D2E2A653B008385EC /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C741422A2E2A653B008385EC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C7239F982E26E4ED00FCEE64 /* Project object */;
 }

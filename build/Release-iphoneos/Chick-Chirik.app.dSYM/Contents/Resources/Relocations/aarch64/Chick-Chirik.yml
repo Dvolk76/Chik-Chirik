@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Release-iphoneos/Chick-Chirik.app/Chick-Chirik'
+relocations:     []
+...

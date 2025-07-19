@@ -1,0 +1,75 @@
+{
+  "" : {
+    "const-values" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick-Chirik-master.swiftconstvalues",
+    "dependencies" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick-Chirik-master.d",
+    "diagnostics" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick-Chirik-master.dia",
+    "emit-module-dependencies" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick-Chirik-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick-Chirik-master-emit-module.dia",
+    "swift-dependencies" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick-Chirik-master.swiftdeps"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/AddExpenseView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/AddExpenseView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/AddExpenseView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/AddExpenseView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/BalanceCalculator.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/BalanceCalculator.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/BalanceCalculator.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/BalanceCalculator.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/Chick_ChirikApp.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick_ChirikApp.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick_ChirikApp.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Chick_ChirikApp.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/ContentView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/ContentView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/EditExpenseView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/EditExpenseView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/EditExpenseView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/EditExpenseView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/ExpenseRow.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/ExpenseRow.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/ExpenseRow.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/ExpenseRow.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/Item.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Item.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Item.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/Item.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/MembersView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/MembersView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/MembersView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/MembersView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/SettleUpView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/SettleUpView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/SettleUpView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/SettleUpView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripDetailView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripDetailView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripDetailView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripDetailView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripListView.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripListView.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripListView.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripListView.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripModels.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripModels.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripModels.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/TripModels.o"
+  },
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  }
+}

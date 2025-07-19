@@ -1,0 +1,48 @@
+{
+  "source": "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripDetailView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Расходы",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Участники",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Пока нет расходов",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Посчитать долги",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Добавить расход",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 50
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,2 @@
+Target dependency graph (1 target)
+Target 'Chick-Chirik' in project 'Chick-Chirik' (no dependencies)

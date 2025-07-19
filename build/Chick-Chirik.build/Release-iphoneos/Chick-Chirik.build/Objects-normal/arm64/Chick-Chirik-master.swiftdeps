@@ -1,0 +1,19 @@
+version: "Apple Swift version 6.1.2 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)"
+options: "bcf108de1634af81a79ece3fa4ac269279df5e2390f23a52f1ffe95b6cb031db"
+build_start_time: [1752822562, 723993000]
+build_end_time: [1752822571, 896856000]
+inputs:
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/AddExpenseView.swift": [1752688070, 14863688]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/BalanceCalculator.swift": [1752791417, 594107589]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/Chick_ChirikApp.swift": [1752610925, 244743414]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/ContentView.swift": [1752608109, 685253158]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/EditExpenseView.swift": [1752688320, 747053146]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/ExpenseRow.swift": [1752615138, 535502912]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/Item.swift": [1752608109, 686824082]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/MembersView.swift": [1752706063, 11079703]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/SettleUpView.swift": [1752618906, 339169351]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripDetailView.swift": [1752616205, 675945707]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripListView.swift": [1752793092, 675112172]
+  "/Users/dmitryvolkov/untitled folder/Chick-Chirik/Chick-Chirik/TripModels.swift": [1752789504, 973581535]
+  ? "/Users/dmitryvolkov/untitled folder/Chick-Chirik/build/Chick-Chirik.build/Release-iphoneos/Chick-Chirik.build/DerivedSources/GeneratedAssetSymbols.swift"
+  : [1752822562, 612786388]
