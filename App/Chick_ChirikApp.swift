@@ -12,19 +12,16 @@ import Firebase
 struct RootView: View {
     @StateObject var authVM = AuthViewModel()
     var body: some View {
-        Group {
-            if authVM.user == nil || (authVM.user?.isAnonymous == true && !authVM.shouldShowTripsAfterAnonLogin && authVM.linkedOwnerUid == nil) {
-                AuthView(authVM: authVM)
-                    .environmentObject(authVM)
-            } else {
-                TripListView()
-                    .environmentObject(authVM)
-                    .onAppear {
-                        if authVM.shouldShowTripsAfterAnonLogin {
-                            authVM.shouldShowTripsAfterAnonLogin = false
-                        }
-                    }
-            }
+        switch authVM.screenState {
+        case .auth:
+            AuthView(authVM: authVM)
+                .environmentObject(authVM)
+        case .sync:
+            AuthView(authVM: authVM)
+                .environmentObject(authVM) // sync UI внутри AuthView
+        case .trips:
+            TripListView()
+                .environmentObject(authVM)
         }
     }
 }

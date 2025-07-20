@@ -5,10 +5,11 @@ import FirebaseFirestore
 import CryptoKit
 
 class AuthViewModel: ObservableObject {
+    enum ScreenState { case auth, sync, trips }
+    @Published var screenState: ScreenState = .auth
     @Published var user: User?
     @Published var errorMessage: String?
     @Published var linkedOwnerUid: String? = nil
-    @Published var shouldShowTripsAfterAnonLogin: Bool = false
     private var handle: AuthStateDidChangeListenerHandle?
     private let db = Firestore.firestore()
     private var linkedListener: ListenerRegistration?
@@ -50,6 +51,7 @@ class AuthViewModel: ObservableObject {
         try? Auth.auth().signOut()
         self.user = nil
         self.linkedOwnerUid = nil
+        self.screenState = .auth
     }
 
     // MARK: - Custom Login/Password Auth
@@ -149,6 +151,7 @@ class AuthViewModel: ObservableObject {
                     if self.linkedOwnerUid != ownerUid {
                         print("linkedOwnerUid updated to:", ownerUid)
                         self.linkedOwnerUid = ownerUid
+                        self.screenState = .trips
                     }
                 }
             }

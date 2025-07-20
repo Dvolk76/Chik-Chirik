@@ -43,12 +43,11 @@ struct AuthView: View {
                     Button(action: {
                         if let user = authVM.user, user.isAnonymous {
                             // Уже анонимный — просто переход
-                            authVM.shouldShowTripsAfterAnonLogin = true
+                            authVM.screenState = .trips
                         } else {
                             showLoading = true
                             let start = Date()
                             authVM.ensureAnonymousUser()
-                            authVM.shouldShowTripsAfterAnonLogin = true
                             // Следим за появлением user
                             func check() {
                                 if authVM.user != nil {
@@ -56,6 +55,7 @@ struct AuthView: View {
                                     let delay = max(1.0 - elapsed, 0)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                                         showLoading = false
+                                        authVM.screenState = .trips
                                     }
                                 } else {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: check)
@@ -75,8 +75,10 @@ struct AuthView: View {
                     .padding(.horizontal)
                     .disabled(showLoading)
                     Button("Синхронизировать с другим устройством") {
-                        authVM.ensureAnonymousUser()
-                        showLinkDevice = true
+                        if authVM.user == nil {
+                            authVM.ensureAnonymousUser()
+                        }
+                        authVM.screenState = .sync
                     }
                     .padding(.top, 8)
                     .disabled(showLoading)
@@ -87,11 +89,10 @@ struct AuthView: View {
                             .padding(.horizontal)
                     }
                 }
-                if showLinkDevice {
+                if authVM.screenState == .sync {
                     VStack(spacing: 12) {
                         Text("Введите ID, логин или отсканируйте QR-код основного устройства")
                             .font(.headline)
-                        // UID только в блоке sync
                         if let user = authVM.user {
                             HStack(spacing: 8) {
                                 Text(user.uid)
@@ -154,7 +155,7 @@ struct AuthView: View {
                         }
                         .disabled(isLoading)
                         .padding(.top, 8)
-                        Button("Назад") { showLinkDevice = false; linkInput = ""; linkRequestSent = false; linkError = nil }
+                        Button("Назад") { authVM.screenState = .auth; linkInput = ""; linkRequestSent = false; linkError = nil }
                             .padding(.top, 4)
                         if let info = infoMessage {
                             Text(info)
