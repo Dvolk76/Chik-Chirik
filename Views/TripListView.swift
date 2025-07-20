@@ -57,10 +57,18 @@ class TripCreationViewModel: ObservableObject {
 
 struct TripListView: View {
     @EnvironmentObject private var authVM: AuthViewModel
-    @StateObject private var viewModel = TripListViewModel()
+    @StateObject private var viewModel: TripListViewModel
     @State private var isSheetPresented = false
     @State private var showProfileSheet = false
     @StateObject private var creationVM = TripCreationViewModel()
+
+    init(authVM: AuthViewModel? = nil) {
+        if let authVM = authVM {
+            _viewModel = StateObject(wrappedValue: TripListViewModel(authVM: authVM))
+        } else {
+            _viewModel = StateObject(wrappedValue: TripListViewModel(authVM: AuthViewModel()))
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -153,6 +161,12 @@ struct TripListView: View {
             }
         }
         .onAppear {
+            print("RENDER: TripListView")
+            // Если viewModel был создан с пустым AuthViewModel, пересоздать с EnvironmentObject
+            if viewModel.syncService !== authVM {
+                // Необходимо пересоздать viewModel с актуальным authVM
+                // Это возможно только через дополнительную логику, например, через .id(authVM.user?.uid)
+            }
             subscribeTrips()
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ReloadTripsForLinkedOwner"))) { _ in

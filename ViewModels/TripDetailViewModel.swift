@@ -6,8 +6,18 @@ class TripDetailViewModel: ObservableObject {
     @Published var members: [Member] = []
     private let tripService = TripFirestoreService()
     private let memberService = MemberFirestoreService()
+    private let syncService = SyncService()
     private var cancellables = Set<AnyCancellable>()
     private var tripId: String = ""
+
+    init() {
+        syncService.syncFinished
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
 
     func subscribe(tripId: String) {
         self.tripId = tripId

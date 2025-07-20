@@ -169,7 +169,7 @@ struct AddExpenseView: View {
             }
             total = price
             let share = Decimal(1) / Decimal(includedMembers.count)
-            splits = includedMembers.map { Split(member: $0, share: share) }
+            splits = includedMembers.map { Split(memberId: $0.id, share: share) }
         } else {
             total = totalCustomShare
             guard total > 0 else {
@@ -181,13 +181,13 @@ struct AddExpenseView: View {
             splits = includedMembers.map { member in
                 let individual = customShares[member] ?? 0
                 let share = totalShares > 0 ? individual / totalShares : 0
-                return Split(member: member, share: share)
+                return Split(memberId: member.id, share: share)
             }
         }
         let expense = Expense(
             title: title,
             amount: total,
-            paidBy: payer,
+            paidById: payer.id,
             splits: splits
         )
         trip.expenses.append(expense)

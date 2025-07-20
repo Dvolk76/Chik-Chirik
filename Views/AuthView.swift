@@ -7,18 +7,15 @@ struct AuthView: View {
     @State private var showRegister = false
     @State private var showLogin = false
     @State private var showLinkDevice = false
-    @State private var login = ""
-    @State private var password = ""
-    @State private var confirmPassword = ""
     @State private var isLoading = false
     @State private var infoMessage: String?
-    @State private var loginExists = false
     @State private var linkInput = ""
     @State private var linkRequestSent = false
     @State private var linkError: String? = nil
     @State private var showQRScanner = false
     @State private var showSyncSuccess = false
     @State private var syncBannerOpacity = 0.0
+    @State private var showLoading = false
     
     var body: some View {
         ZStack {
@@ -39,7 +36,34 @@ struct AuthView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 if !showRegister && !showLogin && !showLinkDevice {
-                    Button(action: { authVM.signInAnonymously() }) {
+                    if showLoading {
+                        ProgressView("Создаём гостевой профиль...")
+                            .padding()
+                    }
+                    Button(action: {
+                        if let user = authVM.user, user.isAnonymous {
+                            // Уже анонимный — просто переход
+                            authVM.shouldShowTripsAfterAnonLogin = true
+                        } else {
+                            showLoading = true
+                            let start = Date()
+                            authVM.ensureAnonymousUser()
+                            authVM.shouldShowTripsAfterAnonLogin = true
+                            // Следим за появлением user
+                            func check() {
+                                if authVM.user != nil {
+                                    let elapsed = Date().timeIntervalSince(start)
+                                    let delay = max(1.0 - elapsed, 0)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                                        showLoading = false
+                                    }
+                                } else {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: check)
+                                }
+                            }
+                            check()
+                        }
+                    }) {
                         Text("Войти анонимно")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
@@ -49,12 +73,13 @@ struct AuthView: View {
                             .cornerRadius(12)
                     }
                     .padding(.horizontal)
-                    if loginExists {
-                        Button("Войти по логину и паролю") { showLogin = true }
-                            .padding(.top, 8)
+                    .disabled(showLoading)
+                    Button("Синхронизировать с другим устройством") {
+                        authVM.ensureAnonymousUser()
+                        showLinkDevice = true
                     }
-                    Button("Синхронизировать с другим устройством") { showLinkDevice = true }
-                        .padding(.top, 8)
+                    .padding(.top, 8)
+                    .disabled(showLoading)
                     if let error = authVM.errorMessage {
                         Text(error)
                             .foregroundColor(.red)
@@ -66,6 +91,32 @@ struct AuthView: View {
                     VStack(spacing: 12) {
                         Text("Введите ID, логин или отсканируйте QR-код основного устройства")
                             .font(.headline)
+                        // UID только в блоке sync
+                        if let user = authVM.user {
+                            HStack(spacing: 8) {
+                                Text(user.uid)
+                                    .font(.system(.body, design: .monospaced))
+                                    .foregroundColor(.primary)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(.systemGray6))
+                                    )
+                                Button {
+                                    UIPasteboard.general.string = user.uid
+                                    infoMessage = "ID скопирован!"
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        infoMessage = nil
+                                    }
+                                } label: {
+                                    Image(systemName: "doc.on.doc")
+                                        .font(.title2)
+                                }
+                            }
+                        }
                         HStack {
                             TextField("ID, логин или QR-код", text: $linkInput)
                                 .autocapitalization(.none)
@@ -105,44 +156,12 @@ struct AuthView: View {
                         .padding(.top, 8)
                         Button("Назад") { showLinkDevice = false; linkInput = ""; linkRequestSent = false; linkError = nil }
                             .padding(.top, 4)
-                    }
-                    .padding(.horizontal)
-                }
-                if showLogin {
-                    VStack(spacing: 12) {
-                        Text("Вход по логину и паролю")
-                            .font(.headline)
-                        TextField("Логин", text: $login)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .textFieldStyle(.roundedBorder)
-                        SecureField("Пароль", text: $password)
-                            .textFieldStyle(.roundedBorder)
                         if let info = infoMessage {
                             Text(info)
-                                .foregroundColor(.red)
+                                .font(.caption)
+                                .foregroundColor(.green)
+                                .transition(.opacity)
                         }
-                        Button(isLoading ? "Вход..." : "Войти") {
-                            guard !login.isEmpty, !password.isEmpty else {
-                                infoMessage = "Введите логин и пароль"
-                                return
-                            }
-                            isLoading = true
-                            authVM.loginWithLogin(login: login, password: password) { success, error in
-                                isLoading = false
-                                if success {
-                                    infoMessage = nil
-                                    showLogin = false
-                                    login = ""; password = ""
-                                } else {
-                                    infoMessage = error
-                                }
-                            }
-                        }
-                        .disabled(isLoading)
-                        .padding(.top, 8)
-                        Button("Назад") { showLogin = false }
-                            .padding(.top, 4)
                     }
                     .padding(.horizontal)
                 }
@@ -187,26 +206,18 @@ struct AuthView: View {
         .onChange(of: authVM.linkedOwnerUid) { oldValue, newValue in
             print("onChange linkedOwnerUid: \(String(describing: oldValue)) -> \(String(describing: newValue))")
             if newValue != nil {
-                // Показываем баннер
-                showSyncSuccess = true
-                withAnimation { syncBannerOpacity = 1.0 }
-                // Для MVP: просто показываем баннер и через 2 сек скрываем
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                    withAnimation { syncBannerOpacity = 0.0 }
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                    showSyncSuccess = false
-                }
-                // --- Новый код: перезагрузка данных ---
-                reloadTripsForLinkedOwner()
+                // RootView сам переключит экран на TripListView
+                showLinkDevice = false
+                linkInput = ""
+                linkRequestSent = false
+                linkError = nil
             }
         }
 
         .onAppear {
+            print("RENDER: AuthView")
             let db = Firestore.firestore()
-            db.collection("users").limit(to: 1).getDocuments { snap, _ in
-                loginExists = (snap?.documents.count ?? 0) > 0
-            }
+            // Удалить блок, связанный с логином и паролем
         }
     }
     // --- Логика определения идентификатора и отправки запроса ---

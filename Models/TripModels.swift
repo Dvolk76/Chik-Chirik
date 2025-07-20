@@ -37,8 +37,8 @@ final class Trip {
     }
     
     func membersWithExpenses() -> [Member] {
-        let expenseMembers = expenses.flatMap { $0.splits.map { $0.member } }
-        return Array(Set(expenseMembers))
+        let memberIds = expenses.flatMap { $0.splits.map { $0.memberId } }
+        return members.filter { memberIds.contains($0.id) }
     }
 }
 
@@ -74,21 +74,29 @@ final class Expense {
     @Attribute(.unique) var id: UUID
     var title: String
     var amount: Decimal
-    var paidBy: Member
-    @Relationship var splits: [Split]
+    var paidById: UUID // вместо paidBy: Member
+    var splits: [Split]
     var date: Date
     
     init(
         title: String,
         amount: Decimal,
-        paidBy: Member,
+        paidById: UUID,
         splits: [Split] = [],
         date: Date = .now
     ) {
         self.id = UUID()
         self.title = title
         self.amount = amount
-        self.paidBy = paidBy
+        self.paidById = paidById
+        self.splits = splits
+        self.date = date
+    }
+    init(id: UUID, title: String, amount: Decimal, paidById: UUID, splits: [Split], date: Date) {
+        self.id = id
+        self.title = title
+        self.amount = amount
+        self.paidById = paidById
         self.splits = splits
         self.date = date
     }
@@ -99,18 +107,18 @@ final class Expense {
     }
     
     func amountForMember(_ member: Member) -> Decimal {
-        guard let split = splits.first(where: { $0.member == member }) else { return 0 }
+        guard let split = splits.first(where: { $0.memberId == member.id }) else { return 0 }
         return amount * split.share
     }
 }
 
 @Model
 final class Split {
-    var member: Member
+    var memberId: UUID
     var share: Decimal
     
-    init(member: Member, share: Decimal) {
-        self.member = member
+    init(memberId: UUID, share: Decimal) {
+        self.memberId = memberId
         self.share = share
     }
 }

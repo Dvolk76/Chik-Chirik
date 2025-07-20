@@ -5,6 +5,7 @@ import Combine
 class SyncService: ObservableObject {
     @Published var pendingLinks: [PendingLink] = []
     @Published var linkedDevices: [LinkedDevice] = []
+    let syncFinished = PassthroughSubject<Void, Never>() // Combine publisher для завершения синхронизации
     private var pendingLinksListener: ListenerRegistration?
     private var linkedDevicesListener: ListenerRegistration?
     private let db = Firestore.firestore()
@@ -62,5 +63,10 @@ class SyncService: ObservableObject {
                     self.linkedDevices = docs.compactMap { LinkedDevice.from(doc: $0) }
                 }
             }
+    }
+
+    // Пример: вызвать syncFinished после завершения загрузки всех коллекций трипа
+    func notifySyncFinished() {
+        syncFinished.send()
     }
 } 

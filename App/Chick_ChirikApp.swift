@@ -11,16 +11,19 @@ import Firebase
 
 struct RootView: View {
     @StateObject var authVM = AuthViewModel()
-    // Удаляем groupVM, он больше не нужен
-
     var body: some View {
-        SwiftUI.Group {
-            if authVM.user == nil {
+        Group {
+            if authVM.user == nil || (authVM.user?.isAnonymous == true && !authVM.shouldShowTripsAfterAnonLogin && authVM.linkedOwnerUid == nil) {
                 AuthView(authVM: authVM)
                     .environmentObject(authVM)
             } else {
                 TripListView()
                     .environmentObject(authVM)
+                    .onAppear {
+                        if authVM.shouldShowTripsAfterAnonLogin {
+                            authVM.shouldShowTripsAfterAnonLogin = false
+                        }
+                    }
             }
         }
     }

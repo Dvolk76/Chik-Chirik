@@ -2,15 +2,17 @@ import Foundation
 
 func computeBalances(for trip: Trip) -> [Member: Decimal] {
     var net = Dictionary(uniqueKeysWithValues: trip.members.map { ($0, Decimal(0)) })
-    
+    let memberById = Dictionary(uniqueKeysWithValues: trip.members.map { ($0.id, $0) })
     for expense in trip.expenses {
-        net[expense.paidBy, default: 0] += expense.amount
-        
+        if let payer = memberById[expense.paidById] {
+            net[payer, default: 0] += expense.amount
+        }
         for split in expense.splits {
-            net[split.member, default: 0] -= expense.amount * split.share
+            if let member = memberById[split.memberId] {
+                net[member, default: 0] -= expense.amount * split.share
+            }
         }
     }
-    
     return net
 }
 

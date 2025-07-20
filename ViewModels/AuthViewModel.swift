@@ -7,7 +7,8 @@ import CryptoKit
 class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var errorMessage: String?
-    @Published var linkedOwnerUid: String? = nil // <--- добавлено
+    @Published var linkedOwnerUid: String? = nil
+    @Published var shouldShowTripsAfterAnonLogin: Bool = false
     private var handle: AuthStateDidChangeListenerHandle?
     private let db = Firestore.firestore()
     private var linkedListener: ListenerRegistration?
@@ -15,9 +16,17 @@ class AuthViewModel: ObservableObject {
     init() {
         handle = Auth.auth().addStateDidChangeListener { _, user in
             self.user = user
-            self.listenForLinkedAccount() // <--- ensure listener is always up to date
+            self.listenForLinkedAccount()
         }
-        listenForLinkedAccount()
+    }
+    /// Гарантировать, что есть анонимный пользователь (вызывать из AuthView)
+    func ensureAnonymousUser() {
+        if Auth.auth().currentUser == nil {
+            signInAnonymously()
+        } else {
+            self.user = Auth.auth().currentUser
+            self.listenForLinkedAccount()
+        }
     }
     deinit {
         if let handle = handle { Auth.auth().removeStateDidChangeListener(handle) }
@@ -40,6 +49,7 @@ class AuthViewModel: ObservableObject {
     func signOut() {
         try? Auth.auth().signOut()
         self.user = nil
+        self.linkedOwnerUid = nil
     }
 
     // MARK: - Custom Login/Password Auth

@@ -16,10 +16,11 @@ struct ProfileView: View {
     @State private var login = ""
     @State private var isLoading = false
     @State private var loginSet = false
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
+            ScrollView {
+                VStack(spacing: 32) {
                 // Заголовок
                 VStack(spacing: 16) {
                     ZStack {
@@ -256,6 +257,7 @@ struct ProfileView: View {
                 // Кнопка выхода
                 Button(action: {
                     authVM.signOut()
+                    syncVM.reset()
                 }) {
                     HStack {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
@@ -281,6 +283,11 @@ struct ProfileView: View {
             if let uid = authVM.user?.uid {
                 profileVM.subscribe(uid: uid)
                 syncVM.subscribePendingLinks(for: uid)
+            }
+        }
+        .onChange(of: authVM.linkedOwnerUid) { old, new in
+            if old == nil && new != nil {
+                dismiss()
             }
         }
     }

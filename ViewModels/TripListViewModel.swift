@@ -3,8 +3,29 @@ import Combine
 
 class TripListViewModel: ObservableObject {
     @Published var trips: [Trip] = []
-    private let tripService = TripFirestoreService()
+    let tripService = TripFirestoreService()
+    let syncService = SyncService()
     private var cancellables = Set<AnyCancellable>()
+    
+    init(authVM: AuthViewModel) {
+        syncService.syncFinished
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+        authVM.$linkedOwnerUid
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self, weak authVM] newOwnerUid in
+                guard let self = self, let authVM = authVM else { return }
+                let ownerUid = newOwnerUid ?? authVM.user?.uid
+                if let ownerUid = ownerUid {
+                    self.subscribeTrips(ownerUid: ownerUid)
+                }
+            }
+            .store(in: &cancellables)
+    }
 
     func subscribeTrips(ownerUid: String) {
         print("TripListViewModel.subscribeTrips called with ownerUid:", ownerUid)

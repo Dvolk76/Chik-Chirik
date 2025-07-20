@@ -27,7 +27,7 @@ struct TripDetailView: View {
                             EditExpenseView(expense: expense, trip: trip)
                                 .environmentObject(authVM)
                         } label: {
-                            ExpenseRow(expense: expense, currency: trip.currency)
+                            ExpenseRow(expense: expense, currency: trip.currency, members: viewModel.members)
                         }
                     }
                     .onDelete { indexSet in

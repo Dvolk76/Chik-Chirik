@@ -29,4 +29,8 @@ class SyncViewModel: ObservableObject {
     func approvePendingLink(_ link: PendingLink) {
         syncService.approvePendingLink(link)
     }
+    func reset() {
+        pendingLinks = []
+        linkedDevices = []
+    }
 } 
