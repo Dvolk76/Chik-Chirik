@@ -27,6 +27,7 @@ struct TripDetailView: View {
                         NavigationLink {
                             EditExpenseView(expense: expense, trip: trip)
                                 .environmentObject(authVM)
+                                .environmentObject(viewModel)
                         } label: {
                             ExpenseRow(expense: expense, currency: trip.currency, members: viewModel.members)
                         }
@@ -44,6 +45,7 @@ struct TripDetailView: View {
                 NavigationLink("Посчитать долги") {
                     SettleUpView(trip: trip)
                         .environmentObject(authVM)
+                        .environmentObject(viewModel)
                 }
             }
         }

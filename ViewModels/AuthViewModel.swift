@@ -196,6 +196,18 @@ class AuthViewModel: ObservableObject {
                 }
             }
     }
+
+    // Утилита: определить UID по введённому значению (uid или login)
+    func resolveUid(for value: String, completion: @escaping (String?) -> Void) {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.count == 28 && trimmed.range(of: "^[A-Za-z0-9]+$", options: .regularExpression) != nil {
+            completion(trimmed)
+        } else {
+            fetchUid(for: trimmed) { uid in
+                completion(uid)
+            }
+        }
+    }
 }
 
 // Удаляю дублирующее определение PendingLink, оставляю только одно:

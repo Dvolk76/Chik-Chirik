@@ -115,11 +115,17 @@ struct AddExpenseView: View {
 
                 // --- Плательщик ---
                 Section(header: Text("Плательщик")) {
-                    Picker("Кто оплатил?", selection: $payer) {
-                        ForEach(trip.members) { member in
+                    Picker(selection: $payer) {
+                        // Плейсхолдер для состояния, когда плательщик ещё не выбран
+                        Text("Не выбран").tag(Optional<Member>.none)
+                        ForEach(viewModel.members) { member in
                             Text(member.name).tag(Optional(member))
                         }
+                    } label: {
+                        Text(payer?.name ?? "Кто оплатил?")
+                            .foregroundColor(payer == nil ? .secondary : .primary)
                     }
+                    .pickerStyle(.navigationLink)
                     .accessibilityLabel(Text("Плательщик"))
                     .accessibilityHint(Text("Выберите, кто оплатил этот расход"))
                 }
@@ -193,7 +199,8 @@ struct AddExpenseView: View {
             paidById: payer.id,
             splits: splits
         )
-        trip.expenses.append(expense)
+        // Сохраняем в Firestore через ViewModel, что обеспечит синхронизацию на всех устройствах
+        viewModel.addExpense(expense)
         dismiss()
     }
 

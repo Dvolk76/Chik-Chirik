@@ -41,6 +41,10 @@ class TripDetailViewModel: ObservableObject {
     func addExpense(_ expense: Expense) {
         tripService.addExpense(expense, to: tripId)
     }
+
+    func updateExpense(_ expense: Expense) {
+        tripService.updateExpense(expense, in: tripId)
+    }
     func deleteExpense(_ expense: Expense) {
         tripService.deleteExpense(expense, from: tripId)
     }

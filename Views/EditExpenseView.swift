@@ -6,6 +6,7 @@ struct EditExpenseView: View {
     @Bindable var trip: Trip
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authVM: AuthViewModel
+    @EnvironmentObject var viewModel: TripDetailViewModel
 
     @State private var title: String
     @State private var selectedPayerId: UUID?
@@ -17,7 +18,7 @@ struct EditExpenseView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
-    var members: [Member] { trip.members }
+    var members: [Member] { viewModel.members }
 
     init(expense: Expense, trip: Trip) {
         self.expense = expense
@@ -141,6 +142,7 @@ struct EditExpenseView: View {
                 Alert(title: Text("Ошибка"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
         }
+        // viewModel уже подписан в родительском экране
     }
     private func save() {
         guard let payerId = selectedPayerId, !title.isEmpty, !includedMemberIds.isEmpty else {
@@ -177,6 +179,8 @@ struct EditExpenseView: View {
         expense.amount = total
         expense.paidById = payerId
         expense.splits = splits
+        // Обновляем в Firestore через ViewModel
+        viewModel.updateExpense(expense)
         dismiss()
     }
     private var canSave: Bool {

@@ -5,300 +5,186 @@ struct ProfileView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var profileVM = ProfileViewModel()
     @StateObject private var syncVM = SyncViewModel()
+
+    // MARK: - Local UI State
     @State private var showCopied = false
-    @State private var showQR = false
-    @State private var showLinkDevice = false
+    // QR-код временно убран
     @State private var linkInput = ""
-    @State private var showQRScanner = false
-    @State private var linkError: String? = nil
+    @State private var linkError: String?
     @State private var linkRequestSent = false
+    @State private var loginInput = ""
     @State private var infoMessage: String?
-    @State private var login = ""
     @State private var isLoading = false
-    @State private var loginSet = false
+
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-            ScrollView {
-                VStack(spacing: 32) {
-                // Заголовок
-                VStack(spacing: 16) {
-                    ZStack {
-                        Circle()
-                            .fill(Color(.systemGray5))
-                            .frame(width: 100, height: 100)
-                        Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                            .foregroundColor(.accentColor)
-                    }
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-                    .accessibilityElement()
-                    .accessibilityLabel("Аватар пользователя")
-                    Text("Профиль")
-                        .font(.title.bold())
-                        .foregroundColor(.primary)
-                }
-                .padding(.top, 20)
-
-                // UID и QR-код
-                VStack(spacing: 16) {
-                    Text("Ваш ID для синхронизации")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                        .accessibilityLabel("Ваш идентификатор для синхронизации")
-                    HStack(spacing: 8) {
-                        Text(authVM.user?.uid ?? "—")
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(.primary)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray6))
-                            )
-                            .accessibilityLabel("Ваш уникальный идентификатор")
-                            .accessibilityValue(authVM.user?.uid ?? "Неизвестно")
-                        Button {
-                            UIPasteboard.general.string = authVM.user?.uid
-                            withAnimation { showCopied = true }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                withAnimation { showCopied = false }
-                            }
-                        } label: {
-                            Image(systemName: "doc.on.doc")
-                                .font(.title2)
-                        }
-                        .accessibilityLabel("Скопировать ID")
-                        Button { showQR = true } label: {
-                            Image(systemName: "qrcode")
-                                .font(.title2)
-                        }
-                        .accessibilityLabel("Показать QR-код")
-                    }
-                    if showCopied {
-                        Text("ID скопирован!")
-                            .font(.caption)
-                            .foregroundColor(.green)
-                            .transition(.opacity)
-                            .accessibilityLabel("Идентификатор скопирован")
-                    }
-                }
-                .padding(.top, 12)
-
-                // Логин для синхронизации
-                if let login = authVM.ownerLogin ?? profileVM.login ?? authVM.user?.uid {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Логин для синхронизации")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        Text(login)
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(.primary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray6))
-                            )
-                    }
-                } else if !loginSet && (authVM.user?.isAnonymous ?? true) {
-                    VStack(spacing: 12) {
-                        Text("Добавьте логин для синхронизации между устройствами")
-                            .font(.headline)
-                        TextField("Логин (уникальное имя)", text: $login)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .textFieldStyle(.roundedBorder)
-                        if let info = infoMessage {
-                            Text(info)
-                                .foregroundColor(.red)
-                        }
-                        Button(isLoading ? "Проверка..." : "Сохранить логин") {
-                            guard !login.isEmpty else {
-                                infoMessage = "Заполните поле логина"
-                                return
-                            }
-                            isLoading = true
-                            profileVM.registerLogin(login)
-                            isLoading = false
-                            infoMessage = "Логин успешно сохранён!"
-                            loginSet = true
-                        }
-                        .disabled(isLoading)
-                    }
-                    .padding(.top, 8)
-                } else if loginSet {
-                    Text("Логин успешно сохранён! Теперь вы можете использовать его для входа на других устройствах.")
-                        .foregroundColor(.green)
-                        .font(.subheadline)
-                }
-
-                // Синхронизация устройств (pending links)
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Запросы на синхронизацию")
-                        .font(.headline)
-                    if authVM.pendingLinks.isEmpty {
-                        HStack(spacing: 8) {
-                            Image(systemName: "tray")
-                                .foregroundColor(.secondary)
-                            Text("Нет новых запросов")
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color(.systemGray6))
-                        )
-                        .transition(.opacity)
-                    } else {
-                        VStack(spacing: 8) {
-                            ForEach(authVM.pendingLinks) { req in
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text("Новое устройство:")
-                                            .font(.subheadline)
-                                            .foregroundColor(.secondary)
-                                        Text(req.requesterUid)
-                                            .font(.system(.body, design: .monospaced))
-                                            .foregroundColor(.primary)
-                                    }
-                                    Spacer()
-                                    Button("Разрешить") {
-                                        authVM.approvePendingLink(req) { _,_ in }
-                                    }
-                                    .buttonStyle(.borderedProminent)
-                                }
-                                .padding(8)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color(.systemGray5))
-                                )
-                                .transition(.move(edge: .bottom).combined(with: .opacity))
-                            }
-                        }
-                        .animation(.easeInOut, value: authVM.pendingLinks.count)
-                    }
-                }
-                .padding(.top, 16)
-
-                // --- СИНХРОНИЗАЦИЯ С РОДИТЕЛЬСКИМ УСТРОЙСТВОМ ---
+        NavigationStack {
+            List {
+                profileHeader
+                idSection
+                loginSection
+                syncRequestsSection
                 if authVM.linkedOwnerUid == nil {
-                    VStack(spacing: 12) {
-                        Text("Синхронизировать с другим устройством")
-                            .font(.headline)
-                        TextField("Логин или ID родителя", text: $linkInput)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .textFieldStyle(.roundedBorder)
-                        if let err = linkError {
-                            Text(err)
-                                .foregroundColor(.red)
-                        }
-                        if linkRequestSent {
-                            Text("Запрос отправлен! Подтвердите на родительском устройстве.")
-                                .foregroundColor(.green)
-                        }
-                        Button(isLoading ? "Отправка..." : "Синхронизироваться") {
-                            guard !linkInput.isEmpty else {
-                                linkError = "Введите логин или ID родителя"
-                                return
-                            }
-                            isLoading = true
-                            linkError = nil
-                            // resolveAndSendLinkRequest аналогично AuthView
-                            let value = linkInput.trimmingCharacters(in: .whitespacesAndNewlines)
-                            let parsed: String
-                            if value.hasPrefix("chickchirik:uid:") {
-                                parsed = String(value.dropFirst("chickchirik:uid:".count))
-                            } else if value.hasPrefix("chickchirik:login:") {
-                                parsed = String(value.dropFirst("chickchirik:login:".count))
-                            } else {
-                                parsed = value
-                            }
-                            if parsed.count == 28 && parsed.range(of: "^[A-Za-z0-9]+$", options: .regularExpression) != nil {
-                                authVM.sendLinkRequest(to: parsed) { success, error in
-                                    isLoading = false
-                                    if success {
-                                        linkRequestSent = true
-                                        linkError = nil
-                                    } else {
-                                        linkError = error ?? "Ошибка отправки запроса"
-                                    }
-                                }
-                            } else {
-                                let db = Firestore.firestore()
-                                db.collection("users").document(parsed.lowercased()).getDocument { doc, err in
-                                    if let data = doc?.data(), let uid = data["uid"] as? String {
-                                        authVM.sendLinkRequest(to: uid) { success, error in
-                                            isLoading = false
-                                            if success {
-                                                linkRequestSent = true
-                                                linkError = nil
-                                            } else {
-                                                linkError = error ?? "Ошибка отправки запроса"
-                                            }
-                                        }
-                                    } else {
-                                        isLoading = false
-                                        linkError = "Пользователь не найден"
-                                    }
-                                }
-                            }
-                        }
-                        .disabled(isLoading)
-                    }
-                    .padding(.top, 8)
+                    linkDeviceSection
                 } else {
-                    VStack(spacing: 8) {
-                        Text("Устройство связано с владельцем данных!")
-                            .foregroundColor(.green)
-                        if let owner = authVM.linkedOwnerUid {
-                            Text("ID владельца: \(owner)")
-                                .font(.system(.body, design: .monospaced))
-                                .foregroundColor(.secondary)
-                        }
-                    }
+                    linkedInfoSection
                 }
+                signOutSection
+            }
+            .navigationTitle("Профиль")
+            .navigationBarTitleDisplayMode(.inline)
+            // QR-код отключён
+            .overlay(alignment: .top) {
+                if showCopied {
+                    Text("ID скопирован!")
+                        .font(.footnote)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(.regularMaterial)
+                        .cornerRadius(10)
+                        .shadow(radius: 4)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .padding(.top, 8)
+                }
+            }
+            .onAppear {
+                if let uid = authVM.user?.uid {
+                    profileVM.subscribe(uid: uid)
+                    syncVM.subscribePendingLinks(for: uid)
+                }
+            }
+            .onChange(of: authVM.linkedOwnerUid) { old, new in
+                if old == nil && new != nil { dismiss() }
+            }
+        }
+    }
 
-                // Кнопка выхода
-                Button(action: {
-                    authVM.signOut()
-                    syncVM.reset()
-                }) {
-                    HStack {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                        Text("Выйти из аккаунта")
-                            .font(.headline)
+    // MARK: - Sections
+    private var profileHeader: some View {
+        HStack {
+            Spacer()
+            Image(systemName: "person.crop.circle.fill")
+                .resizable()
+                .frame(width: 72, height: 72)
+                .foregroundColor(.accentColor)
+                .padding(.vertical, 8)
+            Spacer()
+        }
+        .listRowInsets(EdgeInsets())
+        .background(Color.clear)
+    }
+
+    private var idSection: some View {
+        Section(header: Text("ID для синхронизации")) {
+            HStack {
+                Text(authVM.user?.uid ?? "—")
+                    .font(.system(.footnote, design: .monospaced))
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                Spacer()
+                Button { copyUid() } label: { Image(systemName: "doc.on.doc") }
+            }
+            // Возвращаем только строку без текстового сообщения, чтобы layout не прыгал
+        }
+    }
+
+    private var loginSection: some View {
+        Section(header: Text("Логин для синхронизации")) {
+            if let login = authVM.ownerLogin ?? profileVM.login {
+                Text(login).font(.system(.footnote, design: .monospaced))
+            } else {
+                VStack(spacing: 8) {
+                    TextField("Уникальный логин", text: $loginInput)
+                        .autocapitalization(.none)
+                    if let msg = infoMessage { Text(msg).foregroundColor(.red).font(.caption) }
+                    Button(isLoading ? "Сохранение…" : "Сохранить") {
+                        guard !loginInput.isEmpty else { infoMessage = "Введите логин"; return }
+                        isLoading = true
+                        profileVM.registerLogin(loginInput)
+                        isLoading = false
                     }
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 32)
-                    .padding(.vertical, 16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.red)
-                    )
-                    .shadow(color: .red.opacity(0.3), radius: 8, x: 0, y: 4)
+                    .disabled(isLoading)
                 }
-                .accessibilityLabel("Выйти из аккаунта")
-            }
-            .padding(.horizontal, 20)
-        }
-        .background(Color(.systemGroupedBackground))
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            if let uid = authVM.user?.uid {
-                profileVM.subscribe(uid: uid)
-                syncVM.subscribePendingLinks(for: uid)
             }
         }
-        .onChange(of: authVM.linkedOwnerUid) { old, new in
-            if old == nil && new != nil {
-                dismiss()
+    }
+
+    private var syncRequestsSection: some View {
+        Section(header: Text("Запросы на синхронизацию")) {
+            if authVM.pendingLinks.isEmpty {
+                Text("Нет новых запросов").foregroundColor(.secondary)
+            } else {
+                ForEach(authVM.pendingLinks) { req in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Новое устройство")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text(req.requesterUid).font(.system(.footnote, design: .monospaced))
+                        }
+                        Spacer()
+                        Button("Разрешить") { authVM.approvePendingLink(req) {_,_ in} }
+                    }
+                }
+            }
+        }
+    }
+
+    private var linkDeviceSection: some View {
+        Section(header: Text("Синхронизировать с другим устройством")) {
+            VStack(spacing: 8) {
+                TextField("ID или логин родительского устройства", text: $linkInput)
+                    .autocapitalization(.none)
+                if let err = linkError { Text(err).foregroundColor(.red).font(.caption) }
+                if linkRequestSent { Text("Запрос отправлен!").foregroundColor(.green).font(.caption) }
+                Button(isLoading ? "Отправка…" : "Синхронизироваться") { sendLinkRequest() }
+                    .disabled(isLoading)
+            }
+        }
+    }
+
+    private var linkedInfoSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Устройство связано с владельцем данных!").foregroundColor(.green)
+                if let owner = authVM.linkedOwnerUid {
+                    Text("ID владельца: \(owner)").font(.system(.footnote, design: .monospaced))
+                }
+            }
+        }
+    }
+
+    private var signOutSection: some View {
+        Section {
+            Button(role: .destructive) { authVM.signOut(); syncVM.reset() } label: {
+                Text("Выйти из аккаунта").frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+    }
+
+    // MARK: - Helpers
+    private func copyUid() {
+        UIPasteboard.general.string = authVM.user?.uid
+        // Haptic feedback
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+        generator.prepare()
+        withAnimation { showCopied = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { withAnimation { showCopied = false } }
+    }
+
+    // QR sheet и генерация удалены
+
+    private func sendLinkRequest() {
+        guard !linkInput.isEmpty else { linkError = "Введите ID или логин"; return }
+        isLoading = true
+        let value = linkInput.trimmingCharacters(in: .whitespaces)
+        authVM.resolveUid(for: value) { uid in
+            guard let uid = uid else { linkError = "Пользователь не найден"; isLoading = false; return }
+            authVM.sendLinkRequest(to: uid) { success, error in
+                isLoading = false
+                if success { linkRequestSent = true; linkError = nil } else { linkError = error }
             }
         }
     }
@@ -333,7 +219,7 @@ private struct UserIDSectionView: View {
     @ObservedObject var authVM: AuthViewModel
     @Binding var userLogin: String?
     @Binding var showCopied: Bool
-    @Binding var showQR: Bool
+    // QR-код временно убран
     var body: some View {
         VStack(spacing: 8) { // уменьшил вертикальный отступ
             Text("Ваш ID для синхронизации")
@@ -365,11 +251,7 @@ private struct UserIDSectionView: View {
                         .font(.title2)
                 }
                 .accessibilityLabel("Скопировать ID")
-                Button { showQR = true } label: {
-                    Image(systemName: "qrcode")
-                        .font(.title2)
-                }
-                .accessibilityLabel("Показать QR-код")
+                // QR-код отключён
             }
             if showCopied {
                 Text("ID скопирован!")
@@ -548,7 +430,7 @@ private struct SyncDeviceButton: View {
 private struct LinkDeviceSectionView: View {
     @ObservedObject var authVM: AuthViewModel
     @Binding var linkInput: String
-    @Binding var showQRScanner: Bool
+    // QR-код отключён
     @Binding var linkError: String?
     @Binding var linkRequestSent: Bool
     @Binding var isLoading: Bool
@@ -562,10 +444,6 @@ private struct LinkDeviceSectionView: View {
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .textFieldStyle(.roundedBorder)
-                Button(action: { showQRScanner = true }) {
-                    Image(systemName: "qrcode.viewfinder")
-                        .font(.title2)
-                }
                 // QRCodeScannerView должен быть реализован отдельно
             }
             if let err = linkError {
@@ -655,7 +533,7 @@ private struct NotAuthorizedView: View {
 private struct QRSheetView: View {
     @ObservedObject var authVM: AuthViewModel
     @Binding var userLogin: String?
-    @Binding var showQR: Bool
+    // QR-код отключён
     var body: some View {
         VStack(spacing: 24) {
             Text("QR-код для синхронизации")
@@ -668,35 +546,13 @@ private struct QRSheetView: View {
                         return "chickchirik:uid:\(uid)"
                     }
                 }()
-                if let img = generateQRCode(from: qrString) {
-                    Image(uiImage: img)
-                        .interpolation(.none)
-                        .resizable()
-                        .frame(width: 200, height: 200)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(16)
-                        .shadow(radius: 8)
-                }
-                Text("Поделитесь этим кодом для синхронизации на другом устройстве")
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
+                // QR-код отключён
             }
-            Button("Закрыть") { showQR = false }
+            Button("Закрыть") { /* showQR = false */ }
         }
         .padding(32)
     }
-    private func generateQRCode(from string: String) -> UIImage? {
-        let context = CIContext()
-        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
-        let data = Data(string.utf8)
-        filter.setValue(data, forKey: "inputMessage")
-        if let outputImage = filter.outputImage,
-           let cgimg = context.createCGImage(outputImage.transformed(by: CGAffineTransform(scaleX: 10, y: 10)), from: outputImage.extent) {
-            return UIImage(cgImage: cgimg)
-        }
-        return nil
-    }
+    // QR sheet и генерация удалены
 }
 
 struct InfoRow: View {

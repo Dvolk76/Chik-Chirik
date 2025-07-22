@@ -97,9 +97,7 @@ class TripFirestoreService: ObservableObject {
                 .addSnapshotListener { snap, err in
                     guard let docs = snap?.documents else { onUpdate([]); return }
                     var expenses: [Expense] = []
-                    let group = DispatchGroup()
                     for doc in docs {
-                        group.enter()
                         let d = doc.data()
                         guard let idString = d["id"] as? String,
                               let id = UUID(uuidString: idString),
@@ -107,35 +105,57 @@ class TripFirestoreService: ObservableObject {
                               let amount = d["amount"] as? Double,
                               let paidByIdStr = d["paidBy"] as? String,
                               let paidById = UUID(uuidString: paidByIdStr),
-                              let date = d["date"] as? TimeInterval else { group.leave(); continue }
-                        self.fetchSplits(tripId: tripId, expenseId: doc.documentID) { splits in
-                            let expense = Expense(
-                                id: id,
-                                title: title,
-                                amount: Decimal(amount),
-                                paidById: paidById,
-                                splits: splits,
-                                date: Date(timeIntervalSince1970: date)
-                            )
-                            expenses.append(expense)
-                            group.leave()
+                              let date = d["date"] as? TimeInterval else { continue }
+                        // Пробуем получить splits из поля
+                        var splits: [Split] = []
+                        if let splitsArr = d["splits"] as? [[String: Any]] {
+                            splits = splitsArr.compactMap { dict in
+                                guard let memberIdStr = dict["memberId"] as? String,
+                                      let memberId = UUID(uuidString: memberIdStr),
+                                      let share = dict["share"] as? Double else { return nil }
+                                return Split(memberId: memberId, share: Decimal(share))
+                            }
+                        } else {
+                            // Fallback – старый способ через подколлекцию
+                            let group = DispatchGroup()
+                            group.enter()
+                            self.fetchSplits(tripId: tripId, expenseId: doc.documentID) { fetched in
+                                splits = fetched
+                                group.leave()
+                            }
+                            group.wait()
                         }
+                        let expense = Expense(
+                            id: id,
+                            title: title,
+                            amount: Decimal(amount),
+                            paidById: paidById,
+                            splits: splits,
+                            date: Date(timeIntervalSince1970: date)
+                        )
+                        expenses.append(expense)
                     }
-                    group.notify(queue: .main) {
-                        onUpdate(expenses)
-                    }
+                    onUpdate(expenses)
                 }
         }
     }
 
     // Добавить расход
     func addExpense(_ expense: Expense, to tripId: String, completion: ((Bool) -> Void)? = nil) {
+        // Подготовка массива splits для встраивания в документ
+        let splitsArr: [[String: Any]] = expense.splits.map { split in
+            [
+                "memberId": split.memberId.uuidString,
+                "share": NSDecimalNumber(decimal: split.share).doubleValue
+            ]
+        }
         let data: [String: Any] = [
             "id": expense.id.uuidString,
             "title": expense.title,
             "amount": NSDecimalNumber(decimal: expense.amount).doubleValue,
-            "paidBy": expense.paidById.uuidString, // исправлено
-            "date": expense.date.timeIntervalSince1970
+            "paidBy": expense.paidById.uuidString,
+            "date": expense.date.timeIntervalSince1970,
+            "splits": splitsArr
         ]
         db.collection("trips").document(tripId).collection("expenses").document(expense.id.uuidString).setData(data) { err in
             completion?(err == nil)
@@ -144,12 +164,19 @@ class TripFirestoreService: ObservableObject {
 
     // Обновить расход
     func updateExpense(_ expense: Expense, in tripId: String, completion: ((Bool) -> Void)? = nil) {
+        let splitsArr: [[String: Any]] = expense.splits.map { split in
+            [
+                "memberId": split.memberId.uuidString,
+                "share": NSDecimalNumber(decimal: split.share).doubleValue
+            ]
+        }
         let data: [String: Any] = [
             "id": expense.id.uuidString,
             "title": expense.title,
             "amount": NSDecimalNumber(decimal: expense.amount).doubleValue,
-            "paidBy": expense.paidById.uuidString, // исправлено
-            "date": expense.date.timeIntervalSince1970
+            "paidBy": expense.paidById.uuidString,
+            "date": expense.date.timeIntervalSince1970,
+            "splits": splitsArr
         ]
         db.collection("trips").document(tripId).collection("expenses").document(expense.id.uuidString).setData(data) { err in
             completion?(err == nil)
