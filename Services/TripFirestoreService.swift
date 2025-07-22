@@ -171,10 +171,19 @@ class TripFirestoreService: ObservableObject {
               let currency = d["currency"] as? String,
               let created = d["created"] as? TimeInterval,
               let closed = d["closed"] as? Bool,
-              let ownerUid = d["ownerUid"] as? String
-        else { return nil }
-        // Пока без парсинга участников и расходов
+              let ownerUid = d["ownerUid"] as? String else { return nil }
+        // id может быть сохранён полем или берём documentID
+        let id: UUID = {
+            if let idStr = d["id"] as? String, let uuid = UUID(uuidString: idStr) {
+                return uuid
+            } else if let uuid = UUID(uuidString: doc.documentID) {
+                return uuid
+            } else {
+                return UUID()
+            }
+        }()
         return Trip(
+            id: id,
             name: name,
             currency: currency,
             created: Date(timeIntervalSince1970: created),

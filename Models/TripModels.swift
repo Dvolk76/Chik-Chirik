@@ -31,6 +31,17 @@ final class Trip {
         self.ownerUid = ownerUid // <--- добавлено
     }
     
+    init(id: UUID, name: String, currency: String = "RUB", created: Date = Date(), members: [Member] = [], expenses: [Expense] = [], closed: Bool = false, ownerUid: String) {
+        self.id = id
+        self.name = name
+        self.currency = currency
+        self.created = created
+        self.members = members
+        self.expenses = expenses
+        self.closed = closed
+        self.ownerUid = ownerUid
+    }
+    
     // MARK: - Test Helpers
     var totalExpenses: Decimal {
         expenses.reduce(0) { $0 + $1.amount }

@@ -49,10 +49,7 @@ class TripListViewModel: ObservableObject {
             group.notify(queue: .main) {
                 // После добавления участников — пересоздать подписку
                 self?.subscribeTrips(ownerUid: trip.ownerUid)
-                // Синхронизировать локальный trip.members с отправленным массивом
-                if let idx = self?.trips.firstIndex(where: { $0.id == trip.id }) {
-                    self?.trips[idx].members = trip.members
-                }
+                // Синхронизировать локальный trip.members не нужно, данные приходят из Firestore
                 completion?()
             }
         }

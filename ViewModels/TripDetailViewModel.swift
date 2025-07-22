@@ -44,7 +44,10 @@ class TripDetailViewModel: ObservableObject {
     func deleteExpense(_ expense: Expense) {
         tripService.deleteExpense(expense, from: tripId)
     }
-    func addMember(_ member: Member) {
+    // Public API для управления участниками
+    func addMember(name: String) {
+        guard !name.trimmed.isEmpty else { return }
+        let member = Member(name: name)
         memberService.addMember(member, to: tripId)
     }
     func deleteMember(_ member: Member) {

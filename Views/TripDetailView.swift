@@ -12,8 +12,9 @@ struct TripDetailView: View {
             // --- СЕКЦИЯ: Переход к участникам ---
             Section {
                 NavigationLink("Участники") {
-                    MembersView(trip: trip)
+                    MembersView()
                         .environmentObject(authVM)
+                        .environmentObject(viewModel)
                 }
             }
             // --- СЕКЦИЯ: Список расходов ---
