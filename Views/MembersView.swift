@@ -28,8 +28,12 @@ struct MembersView: View {
         }
         .navigationTitle("Участники")
         .onAppear {
+            print("MembersView onAppear for tripId: \(trip.id)")
             subscribeMembers()
             nameFieldFocused = false
+        }
+        .onReceive(viewModel.$members) { members in
+            print("MembersView: members updated: count = \(members.count), names = \(members.map { $0.name })")
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ReloadTripsForLinkedOwner"))) { _ in
             subscribeMembers()

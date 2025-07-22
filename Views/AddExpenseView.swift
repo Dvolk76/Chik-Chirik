@@ -17,6 +17,8 @@ struct AddExpenseView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
+    @StateObject private var viewModel = TripDetailViewModel()
+
     var activeUid: String? {
         authVM.linkedOwnerUid ?? authVM.user?.uid
     }
@@ -26,7 +28,7 @@ struct AddExpenseView: View {
             Form {
                 // --- Участники ---
                 Section(header: Text("Кто участвовал в расходе")) {
-                    ForEach(trip.members) { member in
+                    ForEach(viewModel.members) { member in
                         Toggle(isOn: Binding(
                             get: { includedMembers.contains(member) },
                             set: { isOn in
@@ -65,29 +67,27 @@ struct AddExpenseView: View {
 
                 // --- Суммы по людям (ручной режим) ---
                 if splitMode == .custom && !includedMembers.isEmpty {
-                    Section(header: Text("Сумма для каждого")) {
-                        ForEach(Array(includedMembers), id: \.self) { member in
-                            HStack {
-                                Text(member.name)
-                                Spacer()
-                                TextField("0", text: Binding(
-                                    get: { customShareInputs[member] ?? "" },
-                                    set: { newValue in
-                                        customShareInputs[member] = newValue
-                                        if let cleaned = Self.cleanDecimalInput(newValue),
-                                           let parsed = Decimal(string: cleaned) {
-                                            customShares[member] = parsed
-                                        } else {
-                                            customShares[member] = nil
-                                        }
+                    ForEach(Array(includedMembers).sorted(by: { $0.id.uuidString < $1.id.uuidString }), id: \ .id) { member in
+                        HStack {
+                            Text(member.name)
+                            Spacer()
+                            TextField("0", text: Binding(
+                                get: { customShareInputs[member] ?? "" },
+                                set: { newValue in
+                                    customShareInputs[member] = newValue
+                                    if let cleaned = Self.cleanDecimalInput(newValue),
+                                       let parsed = Decimal(string: cleaned) {
+                                        customShares[member] = parsed
+                                    } else {
+                                        customShares[member] = nil
                                     }
-                                ))
-                                .keyboardType(.decimalPad)
-                                .multilineTextAlignment(.trailing)
-                                .accessibilityLabel(Text("Сумма для участника \(member.name)"))
-                                .accessibilityHint(Text("Введите индивидуальную сумму для этого участника"))
-                                Text(trip.currency)
-                            }
+                                }
+                            ))
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .accessibilityLabel(Text("Сумма для участника \(member.name)"))
+                            .accessibilityHint(Text("Введите индивидуальную сумму для этого участника"))
+                            Text(trip.currency)
                         }
                     }
                 }
@@ -143,6 +143,9 @@ struct AddExpenseView: View {
                 for member in includedMembers where customShareInputs[member] == nil {
                     customShareInputs[member] = ""
                 }
+            }
+            .onAppear {
+                viewModel.subscribe(tripId: trip.id.uuidString)
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Ошибка"), message: Text(alertMessage), dismissButton: .default(Text("OK")))

@@ -75,7 +75,10 @@ struct TripListView: View {
             List {
                 ForEach(viewModel.trips) { trip in
                     NavigationLink(destination: TripDetailView(trip: trip).environmentObject(authVM)) {
-                        Text(trip.name)
+                        Text("\(trip.name) [id: \(trip.id)]")
+                            .onAppear {
+                                print("TripListView: onAppear for trip: id = \(trip.id), name = \(trip.name)")
+                            }
                     }
                 }
             }
@@ -112,11 +115,13 @@ struct TripListView: View {
                         }
                         Section("Участники") {
                             List {
-                                ForEach($creationVM.members) { $member in
-                                    TextField("Имя участника", text: $member.name)
-                                        .accessibilityIdentifier("memberField_\(member.id)")
-                                        .accessibilityLabel(Text("Имя участника"))
-                                        .accessibilityHint(Text("Введите имя участника поездки"))
+                                ForEach(creationVM.members) { member in
+                                    if let binding = bindingForMember(withId: member.id) {
+                                        TextField("Имя участника", text: binding)
+                                            .accessibilityIdentifier("memberField_\(member.id)")
+                                            .accessibilityLabel(Text("Имя участника"))
+                                            .accessibilityHint(Text("Введите имя участника поездки"))
+                                    }
                                 }
                                 .onDelete { idx in
                                     creationVM.removeMember(at: idx)
@@ -144,12 +149,13 @@ struct TripListView: View {
                         }
                         ToolbarItem(placement: .confirmationAction) {
                             Button("Создать") {
+                                print("TripListView: creating trip with members = \(creationVM.members.map { "\($0.name) [id: \($0.id)]" })")
                                 guard creationVM.canCreateTrip, let ownerUid = authVM.linkedOwnerUid ?? authVM.user?.uid else { return }
                                 let memberModels = creationVM.members.map { Member(name: $0.name) }
                                 let trip = Trip(name: creationVM.tripName, currency: creationVM.currency, members: memberModels, ownerUid: ownerUid)
-                                viewModel.addTrip(trip)
-                                isSheetPresented = false
-                                creationVM.reset()
+                                viewModel.addTrip(trip) {
+                                    isSheetPresented = false
+                                }
                             }
                             .disabled(!creationVM.canCreateTrip)
                             .accessibilityIdentifier("createTripButton")
@@ -157,6 +163,9 @@ struct TripListView: View {
                             .accessibilityHint(Text("Сохранить новую поездку со всеми участниками"))
                         }
                     }
+                }
+                .onDisappear {
+                    creationVM.reset()
                 }
             }
         }
@@ -184,4 +193,11 @@ struct TripListView: View {
 extension String {
     var trim: String { trimmingCharacters(in: .whitespacesAndNewlines) }
     var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
+}
+
+extension TripListView {
+    func bindingForMember(withId id: UUID) -> Binding<String>? {
+        guard let index = creationVM.members.firstIndex(where: { $0.id == id }) else { return nil }
+        return $creationVM.members[index].name
+    }
 }

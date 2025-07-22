@@ -20,16 +20,22 @@ class TripDetailViewModel: ObservableObject {
     }
 
     func subscribe(tripId: String) {
+        print("TripDetailViewModel.subscribe called for tripId: \(tripId)")
         self.tripId = tripId
         tripService.listenExpenses(for: tripId) { [weak self] expenses in
             DispatchQueue.main.async {
+                print("TripDetailViewModel: expenses updated: count = \(expenses.count)")
                 self?.expenses = expenses
             }
         }
         memberService.listenMembers(for: tripId)
-        memberService.$members
+        let cancellable = memberService.$members
             .receive(on: DispatchQueue.main)
-            .assign(to: &$members)
+            .sink { [weak self] members in
+                print("TripDetailViewModel: members updated: count = \(members.count), names = \(members.map { $0.name })")
+                self?.members = members
+            }
+        cancellables.insert(cancellable)
     }
 
     func addExpense(_ expense: Expense) {

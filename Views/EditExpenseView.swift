@@ -17,7 +17,9 @@ struct EditExpenseView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
-    var members: [Member] { trip.members }
+    @StateObject private var viewModel = TripDetailViewModel()
+
+    var members: [Member] { viewModel.members }
 
     init(expense: Expense, trip: Trip) {
         self.expense = expense
@@ -87,7 +89,7 @@ struct EditExpenseView: View {
                 }
                 if splitMode == .custom && !includedMemberIds.isEmpty {
                     Section(header: Text("Сумма для каждого")) {
-                        ForEach(Array(includedMemberIds), id: \.self) { memberId in
+                        ForEach(Array(includedMemberIds).sorted(by: { $0.uuidString < $1.uuidString }), id: \.self) { memberId in
                             let member = members.first { $0.id == memberId }
                             HStack {
                                 Text(member?.name ?? "?")
@@ -124,6 +126,9 @@ struct EditExpenseView: View {
                         }
                     }
                 }
+            }
+            .onAppear {
+                viewModel.subscribe(tripId: trip.id.uuidString)
             }
             .navigationTitle("Редактировать трату")
             .toolbar {

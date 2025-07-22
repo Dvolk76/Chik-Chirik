@@ -9,24 +9,29 @@ class MemberFirestoreService: ObservableObject {
 
     // Слушать участников поездки
     func listenMembers(for tripId: String) {
+        print("MemberFirestoreService.listenMembers for tripId: \(tripId)")
         listener?.remove()
         listener = db.collection("trips").document(tripId).collection("members")
             .addSnapshotListener { [weak self] snap, err in
+                print("MemberFirestoreService: snapshot for tripId: \(tripId), docs: \(snap?.documents.count ?? 0)")
                 guard let self = self else { return }
                 if let docs = snap?.documents {
                     self.members = docs.compactMap { MemberFirestoreService.memberFromFirestore(doc: $0) }
+                    print("MemberFirestoreService: parsed members: \(self.members.map { $0.name })")
                 }
             }
     }
 
     // Добавить участника
     func addMember(_ member: Member, to tripId: String, completion: ((Bool) -> Void)? = nil) {
+        print("MemberFirestoreService.addMember: \(member.name) to tripId: \(tripId)")
         let data: [String: Any] = [
             "id": member.id.uuidString,
             "name": member.name,
             "isOwner": member.isOwner
         ]
-        db.collection("trips").document(tripId).collection("members").addDocument(data: data) { err in
+        db.collection("trips").document(tripId).collection("members").document(member.id.uuidString).setData(data) { err in
+            print("MemberFirestoreService.addMember: setData finished for \(member.name), error: \(err?.localizedDescription ?? "nil")")
             completion?(err == nil)
         }
     }
@@ -54,6 +59,7 @@ class MemberFirestoreService: ObservableObject {
     // MARK: - Firestore Mapping
     static func memberFromFirestore(doc: QueryDocumentSnapshot) -> Member? {
         let d = doc.data()
+        print("memberFromFirestore: doc = \(d)")
         guard let name = d["name"] as? String,
               let idString = d["id"] as? String,
               let id = UUID(uuidString: idString) else { return nil }

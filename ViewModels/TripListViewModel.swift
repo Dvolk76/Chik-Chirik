@@ -35,10 +35,26 @@ class TripListViewModel: ObservableObject {
             .assign(to: &$trips)
     }
 
-    func addTrip(_ trip: Trip) {
+    func addTrip(_ trip: Trip, completion: (() -> Void)? = nil) {
         tripService.addTrip(trip) { [weak self] _ in
-            // После добавления — пересоздать подписку
-            self?.subscribeTrips(ownerUid: trip.ownerUid)
+            // Добавить участников в коллекцию members и дождаться завершения
+            let memberService = MemberFirestoreService()
+            let group = DispatchGroup()
+            for member in trip.members {
+                group.enter()
+                memberService.addMember(member, to: trip.id.uuidString) { _ in
+                    group.leave()
+                }
+            }
+            group.notify(queue: .main) {
+                // После добавления участников — пересоздать подписку
+                self?.subscribeTrips(ownerUid: trip.ownerUid)
+                // Синхронизировать локальный trip.members с отправленным массивом
+                if let idx = self?.trips.firstIndex(where: { $0.id == trip.id }) {
+                    self?.trips[idx].members = trip.members
+                }
+                completion?()
+            }
         }
     }
 

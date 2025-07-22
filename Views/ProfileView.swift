@@ -90,7 +90,7 @@ struct ProfileView: View {
                 .padding(.top, 12)
 
                 // Логин для синхронизации
-                if let login = profileVM.login {
+                if let login = authVM.ownerLogin ?? profileVM.login ?? authVM.user?.uid {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Логин для синхронизации")
                             .font(.headline)
@@ -141,36 +141,47 @@ struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Запросы на синхронизацию")
                         .font(.headline)
-                    HStack {
-                        Button("Перезапросить") {
-                            if let uid = authVM.user?.uid {
-                                syncVM.subscribePendingLinks(for: uid)
-                            }
+                    if authVM.pendingLinks.isEmpty {
+                        HStack(spacing: 8) {
+                            Image(systemName: "tray")
+                                .foregroundColor(.secondary)
+                            Text("Нет новых запросов")
+                                .foregroundColor(.secondary)
                         }
-                        .buttonStyle(.bordered)
-                        Spacer()
-                    }
-                    if syncVM.pendingLinks.isEmpty {
-                        Text("Нет новых запросов")
-                            .foregroundColor(.secondary)
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color(.systemGray6))
+                        )
+                        .transition(.opacity)
                     } else {
-                        ForEach(syncVM.pendingLinks) { req in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text("Новое устройство: ")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                    Text(req.requesterUid)
-                                        .font(.system(.body, design: .monospaced))
-                                        .foregroundColor(.primary)
+                        VStack(spacing: 8) {
+                            ForEach(authVM.pendingLinks) { req in
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text("Новое устройство:")
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                        Text(req.requesterUid)
+                                            .font(.system(.body, design: .monospaced))
+                                            .foregroundColor(.primary)
+                                    }
+                                    Spacer()
+                                    Button("Разрешить") {
+                                        authVM.approvePendingLink(req) { _,_ in }
+                                    }
+                                    .buttonStyle(.borderedProminent)
                                 }
-                                Spacer()
-                                Button("Разрешить") {
-                                    syncVM.approvePendingLink(req)
-                                }
-                                .buttonStyle(.borderedProminent)
+                                .padding(8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color(.systemGray5))
+                                )
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                             }
                         }
+                        .animation(.easeInOut, value: authVM.pendingLinks.count)
                     }
                 }
                 .padding(.top, 16)

@@ -10,14 +10,21 @@ class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var errorMessage: String?
     @Published var linkedOwnerUid: String? = nil
+    @Published var ownerLogin: String? = nil
     private var handle: AuthStateDidChangeListenerHandle?
     private let db = Firestore.firestore()
     private var linkedListener: ListenerRegistration?
+    private var pendingLinksListener: ListenerRegistration?
+    @Published var pendingLinks: [PendingLink] = []
+
+    private var ownerLoginListener: ListenerRegistration?
 
     init() {
         handle = Auth.auth().addStateDidChangeListener { _, user in
             self.user = user
             self.listenForLinkedAccount()
+            self.subscribeToPendingLinks()
+            self.listenOwnerLogin()
         }
     }
     /// Гарантировать, что есть анонимный пользователь (вызывать из AuthView)
@@ -32,6 +39,7 @@ class AuthViewModel: ObservableObject {
     deinit {
         if let handle = handle { Auth.auth().removeStateDidChangeListener(handle) }
         linkedListener?.remove()
+        pendingLinksListener?.remove()
     }
 
     func signInAnonymously() {
@@ -152,7 +160,39 @@ class AuthViewModel: ObservableObject {
                         print("linkedOwnerUid updated to:", ownerUid)
                         self.linkedOwnerUid = ownerUid
                         self.screenState = .trips
+                        self.subscribeToPendingLinks()
+                        self.listenOwnerLogin()
                     }
+                }
+            }
+    }
+
+    func listenPendingLinksForCurrentOwner() {
+        pendingLinksListener?.remove()
+        let listenUid = linkedOwnerUid ?? user?.uid
+        guard let listenUid = listenUid else { return }
+        pendingLinksListener = db.collection("pending_links").whereField("targetUid", isEqualTo: listenUid)
+            .addSnapshotListener { [weak self] snap, _ in
+                let links = snap?.documents.compactMap { PendingLink.from(doc: $0) } ?? []
+                self?.pendingLinks = links
+            }
+    }
+
+    // Вызов подписки при изменении linkedOwnerUid или user
+    private func subscribeToPendingLinks() {
+        listenPendingLinksForCurrentOwner()
+    }
+
+    func listenOwnerLogin() {
+        ownerLoginListener?.remove()
+        let loginUid = linkedOwnerUid ?? user?.uid
+        guard let loginUid = loginUid else { ownerLogin = nil; return }
+        db.collection("users").whereField("uid", isEqualTo: loginUid)
+            .addSnapshotListener { [weak self] snap, _ in
+                if let doc = snap?.documents.first, let login = doc.data()["login"] as? String {
+                    self?.ownerLogin = login
+                } else {
+                    self?.ownerLogin = nil
                 }
             }
     }
