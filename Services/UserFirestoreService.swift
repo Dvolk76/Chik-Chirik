@@ -40,4 +40,16 @@ class UserFirestoreService: ObservableObject {
             completion?(err == nil)
         }
     }
+
+    // Получить uid по логину
+    func fetchUid(for login: String, completion: @escaping (String?) -> Void) {
+        let loginLower = login.lowercased()
+        db.collection("users").document(loginLower).getDocument { doc, _ in
+            if let uid = doc?.data()? ["uid"] as? String {
+                completion(uid)
+            } else {
+                completion(nil)
+            }
+        }
+    }
 } 

@@ -2,7 +2,7 @@ import Foundation
 import FirebaseAuth
 import Combine
 import FirebaseFirestore
-import CryptoKit
+// CryptoKit no longer needed
 
 class AuthViewModel: ObservableObject {
     enum ScreenState { case auth, sync, trips }
@@ -62,8 +62,8 @@ class AuthViewModel: ObservableObject {
         self.screenState = .auth
     }
 
-    // MARK: - Custom Login/Password Auth
-    func registerWithLogin(login: String, password: String, completion: @escaping (Bool, String?) -> Void) {
+    // MARK: - New simple login flow (no password)
+    func registerLogin(login: String, completion: @escaping (Bool, String?) -> Void) {
         let loginLower = login.lowercased()
         checkLoginUnique(login: loginLower) { [weak self] isUnique in
             guard let self = self else { return }
@@ -71,45 +71,35 @@ class AuthViewModel: ObservableObject {
                 completion(false, "Логин уже занят")
                 return
             }
-            guard Auth.auth().currentUser?.uid != nil else {
-                completion(false, "Нет пользователя для связывания")
+            guard let uid = Auth.auth().currentUser?.uid else {
+                completion(false, "Пользователь не аутентифицирован")
                 return
             }
-            let passwordHash = self.hashPassword(password)
-            let userData: [String: Any] = [
+            self.db.collection("users").document(loginLower).setData([
                 "login": loginLower,
-                "passwordHash": passwordHash,
-                "uid": Auth.auth().currentUser!.uid
-            ]
-            self.db.collection("users").document(loginLower).setData(userData) { err in
-                if let err = err {
-                    completion(false, "Ошибка Firestore: \(err.localizedDescription)")
-                } else {
-                    completion(true, nil)
-                }
+                "uid": uid
+            ]) { err in
+                completion(err == nil, err?.localizedDescription)
             }
         }
     }
 
-    func loginWithLogin(login: String, password: String, completion: @escaping (Bool, String?) -> Void) {
+    func loginWithLogin(login: String, completion: @escaping (Bool, String?) -> Void) {
         let loginLower = login.lowercased()
         db.collection("users").document(loginLower).getDocument { [weak self] doc, err in
             guard let self = self else { return }
-            if let err = err {
-                completion(false, "Ошибка Firestore: \(err.localizedDescription)")
+            if let err = err { completion(false, err.localizedDescription); return }
+            guard let data = doc?.data(), let uid = data["uid"] as? String else {
+                completion(false, "Логин не найден")
                 return
             }
-            guard let data = doc?.data(), let passwordHash = data["passwordHash"] as? String else {
-                completion(false, "Неверный логин или пароль")
-                return
+            // Если это устройство ещё не анонимно авторизовано, войдём анонимно
+            if Auth.auth().currentUser == nil {
+                self.ensureAnonymousUser()
             }
-            if self.hashPassword(password) == passwordHash {
-                // Входим как custom user (без email) — используем анонимного пользователя, но подгружаем его данные
-                // Можно реализовать через custom claims/token, но для MVP просто сохраняем uid
-                // self.user = ... (оставляем текущего пользователя, но можно добавить логику миграции)
-                completion(true, nil)
-            } else {
-                completion(false, "Неверный логин или пароль")
+            // Запускаем процесс синхронизации аналогично sendLinkRequest
+            self.sendLinkRequest(to: uid) { success, msg in
+                completion(success, msg)
             }
         }
     }
@@ -141,11 +131,7 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    private func hashPassword(_ password: String) -> String {
-        let data = Data(password.utf8)
-        let hash = SHA256.hash(data: data)
-        return hash.compactMap { String(format: "%02x", $0) }.joined()
-    }
+    // hashPassword удалён — больше не нужен
 
     // --- Слушатель linked_devices для второго устройства ---
     func listenForLinkedAccount() {

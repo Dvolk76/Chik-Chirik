@@ -3,8 +3,13 @@ import Combine
 
 class TripListViewModel: ObservableObject {
     @Published var trips: [Trip] = []
+    @Published var membershipTrips: [Trip] = [] // trips where current user is invited
+    @Published var memberships: [TripMembership] = []
+
     let tripService = TripFirestoreService()
     let syncService = SyncService()
+    private let membershipService = TripMembershipService()
+    private let tripFetcher = TripFirestoreService()
     private var cancellables = Set<AnyCancellable>()
     
     init(authVM: AuthViewModel) {
@@ -25,6 +30,15 @@ class TripListViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+
+        // Listen membership invites for current device uid
+        authVM.$user
+            .compactMap { $0?.uid }
+            .removeDuplicates()
+            .sink { [weak self] uid in
+                self?.subscribeMemberships(for: uid)
+            }
+            .store(in: &cancellables)
     }
 
     func subscribeTrips(ownerUid: String) {
@@ -33,6 +47,55 @@ class TripListViewModel: ObservableObject {
         tripService.$trips
             .receive(on: DispatchQueue.main)
             .assign(to: &$trips)
+
+        // Listen for invites for this device/user
+        // nothing here; membership listener handled separately
+    }
+
+    func subscribeMemberships(for memberUid: String) {
+        membershipService.listenMemberships(for: memberUid)
+        membershipService.$memberships
+            .sink { [weak self] memberships in
+                guard let self = self else { return }
+                self.memberships = memberships
+                self.fetchMembershipTrips()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func fetchMembershipTrips() {
+        let activeIds = memberships.filter { $0.status != .declined }.map { $0.tripId }
+        guard !activeIds.isEmpty else { membershipTrips = []; return }
+        var fetched: [Trip] = []
+        let group = DispatchGroup()
+        for id in activeIds {
+            group.enter()
+            tripFetcher.fetchTrip(by: id) { trip in
+                if let trip = trip {
+                    fetched.append(trip)
+                }
+                group.leave()
+            }
+        }
+        group.notify(queue: .main) {
+            self.membershipTrips = fetched
+        }
+    }
+
+    func membership(for trip: Trip) -> TripMembership? {
+        memberships.first { $0.tripId == trip.id.uuidString }
+    }
+
+    // MARK: - Invite actions
+    func acceptInvite(for trip: Trip, completion: (() -> Void)? = nil) {
+        guard let membership = memberships.first(where: { $0.tripId == trip.id.uuidString }) else { return }
+        membershipService.updateStatus(membership, status: .accepted, seen: true)
+        completion?()
+    }
+
+    func declineInvite(for trip: Trip) {
+        guard let membership = memberships.first(where: { $0.tripId == trip.id.uuidString }) else { return }
+        membershipService.updateStatus(membership, status: .declined, seen: true)
     }
 
     func addTrip(_ trip: Trip, completion: (() -> Void)? = nil) {

@@ -25,11 +25,15 @@ class MemberFirestoreService: ObservableObject {
     // Добавить участника
     func addMember(_ member: Member, to tripId: String, completion: ((Bool) -> Void)? = nil) {
         print("MemberFirestoreService.addMember: \(member.name) to tripId: \(tripId)")
-        let data: [String: Any] = [
+        var data: [String: Any] = [
             "id": member.id.uuidString,
             "name": member.name,
-            "isOwner": member.isOwner
+            "isOwner": member.isOwner,
+            "status": member.statusRaw ?? "nolink",
         ]
+        if let login = member.login, !login.isEmpty {
+            data["login"] = login.lowercased()
+        }
         db.collection("trips").document(tripId).collection("members").document(member.id.uuidString).setData(data) { err in
             print("MemberFirestoreService.addMember: setData finished for \(member.name), error: \(err?.localizedDescription ?? "nil")")
             completion?(err == nil)
@@ -38,11 +42,15 @@ class MemberFirestoreService: ObservableObject {
 
     // Обновить участника
     func updateMember(_ member: Member, in tripId: String, completion: ((Bool) -> Void)? = nil) {
-        let data: [String: Any] = [
+        var data: [String: Any] = [
             "id": member.id.uuidString,
             "name": member.name,
-            "isOwner": member.isOwner
+            "isOwner": member.isOwner,
+            "status": member.statusRaw ?? "nolink",
         ]
+        if let login = member.login, !login.isEmpty {
+            data["login"] = login.lowercased()
+        }
         db.collection("trips").document(tripId).collection("members").document(member.id.uuidString).setData(data) { err in
             completion?(err == nil)
         }
@@ -64,6 +72,9 @@ class MemberFirestoreService: ObservableObject {
               let idString = d["id"] as? String,
               let id = UUID(uuidString: idString) else { return nil }
         let isOwner = d["isOwner"] as? Bool ?? false
-        return Member(id: id, name: name, isOwner: isOwner)
+        let login = d["login"] as? String
+        let statusRaw = d["status"] as? String
+        let status = statusRaw.flatMap { Member.MemberStatus(rawValue: $0) }
+        return Member(id: id, name: name, login: login, status: status, isOwner: isOwner)
     }
 } 

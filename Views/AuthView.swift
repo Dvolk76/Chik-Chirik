@@ -4,9 +4,9 @@ import AVFoundation
 
 struct AuthView: View {
     @ObservedObject var authVM: AuthViewModel
-    @State private var showRegister = false
-    @State private var showLogin = false
-    @State private var showLinkDevice = false
+    enum FlowState { case initial, createLogin, enterLogin, waiting }
+    @State private var flow: FlowState = .initial
+    @State private var showLinkDevice = false // sync flow kept for future
     @State private var isLoading = false
     @State private var infoMessage: String?
     @State private var linkInput = ""
@@ -16,12 +16,14 @@ struct AuthView: View {
     @State private var showSyncSuccess = false
     @State private var syncBannerOpacity = 0.0
     @State private var showLoading = false
+    @State private var showInfoPopover = false
+    @State private var loginInput = ""
     
     var body: some View {
         ZStack {
             VStack(spacing: 32) {
                 Spacer()
-                Image(systemName: "person.crop.circle.badge.questionmark")
+                Image(systemName: (authVM.user != nil && !(authVM.user?.isAnonymous ?? true)) ? "person.crop.circle" : "person.crop.circle.badge.questionmark")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80, height: 80)
@@ -35,59 +37,15 @@ struct AuthView: View {
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                if !showRegister && !showLogin && !showLinkDevice {
-                    if showLoading {
-                        ProgressView("Создаём гостевой профиль...")
-                            .padding()
-                    }
-                    Button(action: {
-                        if let user = authVM.user, user.isAnonymous {
-                            // Уже анонимный — просто переход
-                            authVM.screenState = .trips
-                        } else {
-                            showLoading = true
-                            let start = Date()
-                            authVM.ensureAnonymousUser()
-                            // Следим за появлением user
-                            func check() {
-                                if authVM.user != nil {
-                                    let elapsed = Date().timeIntervalSince(start)
-                                    let delay = max(1.0 - elapsed, 0)
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                                        showLoading = false
-                                        authVM.screenState = .trips
-                                    }
-                                } else {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: check)
-                                }
-                            }
-                            check()
-                        }
-                    }) {
-                        Text("Войти анонимно")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.accentColor)
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                    }
-                    .padding(.horizontal)
-                    .disabled(showLoading)
-                    Button("Синхронизировать с другим устройством") {
-                        if authVM.user == nil {
-                            authVM.ensureAnonymousUser()
-                        }
-                        authVM.screenState = .sync
-                    }
-                    .padding(.top, 8)
-                    .disabled(showLoading)
-                    if let error = authVM.errorMessage {
-                        Text(error)
-                            .foregroundColor(.red)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-                    }
+                switch flow {
+                case .initial:
+                    initialButtons
+                case .createLogin:
+                    createLoginSection
+                case .enterLogin:
+                    enterLoginSection
+                case .waiting:
+                    waitingSection
                 }
                 if authVM.screenState == .sync {
                     VStack(spacing: 12) {
@@ -170,7 +128,7 @@ struct AuthView: View {
                     // Кнопка регистрации логина теперь только в профиле
                 }
                 Spacer()
-                Text("Ваши данные будут синхронизированы между устройствами по уникальному ID, логину или QR-коду. Для доступа с другого устройства требуется подтверждение на основном устройстве.")
+                Text("Уникальный логин — без персональных данных. Это ваш ключ к синхронизации поездок между устройствами.")
                     .font(.footnote)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -217,9 +175,149 @@ struct AuthView: View {
 
         .onAppear {
             print("RENDER: AuthView")
-            let db = Firestore.firestore()
-            // Удалить блок, связанный с логином и паролем
+            authVM.ensureAnonymousUser()
         }
+    }
+    // MARK: - Subviews
+
+    private var initialButtons: some View {
+        VStack(spacing: 16) {
+            Button {
+                flow = .createLogin
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Новый логин")
+                        .font(.headline)
+                    Image(systemName: "info.circle")
+                    Spacer()
+                }
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .popover(isPresented: $showInfoPopover, arrowEdge: .bottom) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Зачем логин?").font(.title3).bold()
+                    Text("Никаких персональных данных — нужен только уникальный логин для синхронизации ваших поездок между устройствами.")
+                    Button("Понятно") { showInfoPopover = false }
+                        .frame(maxWidth: .infinity)
+                }
+                .padding()
+                .frame(width: 260)
+            }
+
+            Button {
+                flow = .enterLogin
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Уже есть логин")
+                        .font(.headline)
+                    Spacer()
+                }
+            }
+            .buttonStyle(SecondaryButtonStyle())
+
+            // Placeholder block (invisible) для резервирования места под форму
+            VStack(spacing: 12) {
+                TextField("", text: .constant(""))
+                    .padding()
+                    .frame(height:48)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                Button(" ") {}
+                    .buttonStyle(PrimaryButtonStyle())
+            }
+            .opacity(0)
+        }
+        .padding(.horizontal)
+    }
+
+    // Registration
+    private var createLoginSection: some View {
+        VStack(spacing: 12) {
+            TextField("Придумайте логин", text: $loginInput)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .padding()
+                .frame(height:48)
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+            if let error = authVM.errorMessage {
+                Text(error).foregroundColor(.red)
+            }
+            Button(isLoading ? "Проверка…" : "Создать логин") {
+                guard !loginInput.isEmpty else { authVM.errorMessage = "Введите логин"; return }
+                if authVM.user == nil {
+                    authVM.ensureAnonymousUser()
+                }
+                isLoading = true
+                authVM.registerLogin(login: loginInput) { success, msg in
+                    isLoading = false
+                    if success {
+                        authVM.errorMessage = nil
+                        authVM.screenState = .trips
+                    } else {
+                        authVM.errorMessage = msg ?? "Логин уже занят"
+                    }
+                }
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(isLoading)
+
+            Button("Назад") { flow = .initial }
+                .padding(.top,4)
+        }
+        .padding(.horizontal)
+    }
+
+    // Login existing
+    private var enterLoginSection: some View {
+        VStack(spacing: 12) {
+            TextField("Введите логин владельца", text: $loginInput)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .padding()
+                .frame(height:48)
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+            if let error = authVM.errorMessage { Text(error).foregroundColor(.red) }
+            Button(isLoading ? "Запрос…" : "Войти") {
+                guard !loginInput.isEmpty else { authVM.errorMessage = "Введите логин"; return }
+                isLoading = true
+                authVM.loginWithLogin(login: loginInput) { success, msg in
+                    if success {
+                        flow = .waiting
+                        authVM.errorMessage = nil
+                    } else {
+                        isLoading = false
+                        authVM.errorMessage = msg
+                    }
+                }
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(isLoading)
+
+            Button("Назад") { flow = .initial }
+                .padding(.top,4)
+        }
+        .padding(.horizontal)
+    }
+
+    private var waitingSection: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .font(.system(size: 48))
+                .rotationEffect(.degrees(isLoading ? 360 : 0))
+                .animation(isLoading ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: isLoading)
+            Text("Ожидаем подтверждения на основном устройстве…")
+                .multilineTextAlignment(.center)
+            Button("Отмена") {
+                isLoading = false
+                flow = .initial
+            }
+        }
+        .padding()
+        .onAppear { isLoading = true }
     }
     // --- Логика определения идентификатора и отправки запроса ---
     func resolveAndSendLinkRequest(_ input: String) {

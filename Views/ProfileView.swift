@@ -365,7 +365,7 @@ private struct UserLoginSectionView: View {
                         return
                     }
                     isLoading = true
-                    authVM.registerWithLogin(login: login, password: "nopass") { success, error in
+                    authVM.registerLogin(login: login) { success, error in
                         isLoading = false
                         if success {
                             infoMessage = "Логин успешно сохранён!"

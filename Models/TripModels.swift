@@ -61,17 +61,37 @@ final class Trip {
 final class Member: Identifiable, Hashable {
     @Attribute(.unique) var id: UUID
     var name: String
+    // Optional login (username/email) to identify user for invitations
+    var login: String?
+    // Raw status string: pending, accepted, declined, nolink, archived, deleted
+    var statusRaw: String?
+    enum MemberStatus: String {
+        case pending
+        case accepted
+        case declined
+        case nolink
+        case archived
+        case deleted
+    }
+
+    var status: MemberStatus {
+        MemberStatus(rawValue: statusRaw ?? "nolink") ?? .nolink
+    }
     var isOwner: Bool
     
-    init(name: String, isOwner: Bool = false) {
+    init(name: String, login: String? = nil, status: MemberStatus? = nil, isOwner: Bool = false) {
         self.id = UUID()
         self.name = name
+        self.login = login
+        self.statusRaw = status?.rawValue ?? (login == nil ? MemberStatus.nolink.rawValue : MemberStatus.pending.rawValue)
         self.isOwner = isOwner
     }
     // Новый инициализатор для поддержки парсинга из Firestore
-    init(id: UUID, name: String, isOwner: Bool = false) {
+    init(id: UUID, name: String, login: String? = nil, status: MemberStatus? = nil, isOwner: Bool = false) {
         self.id = id
         self.name = name
+        self.login = login
+        self.statusRaw = status?.rawValue ?? (login == nil ? MemberStatus.nolink.rawValue : MemberStatus.pending.rawValue)
         self.isOwner = isOwner
     }
     

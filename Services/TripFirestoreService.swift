@@ -56,7 +56,7 @@ class TripFirestoreService: ObservableObject {
 
     // Удалить поездку
     func deleteTrip(_ trip: Trip, completion: ((Bool) -> Void)? = nil) {
-        guard let id = trip.id.uuidString as String? else { completion?(false); return }
+        let id = trip.id.uuidString
         db.collection("trips").document(id).delete { err in
             completion?(err == nil)
         }
@@ -187,13 +187,25 @@ class TripFirestoreService: ObservableObject {
 
     // Удалить расход
     func deleteExpense(_ expense: Expense, from tripId: String, completion: ((Bool) -> Void)? = nil) {
-        guard let id = expense.id.uuidString as String? else { completion?(false); return }
+        let id = expense.id.uuidString
         db.collection("trips").document(tripId).collection("expenses").document(id).delete { err in
             completion?(err == nil)
         }
     }
 
+    // Загрузить одну поездку по id (без слушателя)
+    func fetchTrip(by tripId: String, completion: @escaping (Trip?) -> Void) {
+        db.collection("trips").document(tripId).getDocument { doc, _ in
+            if let doc = doc, doc.exists {
+                completion(TripFirestoreService.tripFromDocSnapshot(doc: doc))
+            } else {
+                completion(nil)
+            }
+        }
+    }
+
     // MARK: - Firestore Mapping
+    // Вариант для QueryDocumentSnapshot (используется в слушателях)
     static func tripFromFirestore(doc: QueryDocumentSnapshot) -> Trip? {
         let d = doc.data()
         guard let name = d["name"] as? String,
@@ -223,6 +235,20 @@ class TripFirestoreService: ObservableObject {
             pinned: pinned,
             ownerUid: ownerUid
         )
+    }
+
+    // Вариант для DocumentSnapshot (одиночный fetch)
+    static func tripFromDocSnapshot(doc: DocumentSnapshot) -> Trip? {
+        guard let d = doc.data() else { return nil }
+        guard let name = d["name"] as? String,
+              let currency = d["currency"] as? String,
+              let created = d["created"] as? TimeInterval,
+              let closed = d["closed"] as? Bool,
+              let ownerUid = d["ownerUid"] as? String else { return nil }
+        let pinned = d["pinned"] as? Bool ?? false
+        let idStr = tripIdFrom(doc: doc)
+        let id = UUID(uuidString: idStr) ?? UUID()
+        return Trip(id: id, name: name, currency: currency, created: Date(timeIntervalSince1970: created), members: [], expenses: [], closed: closed, pinned: pinned, ownerUid: ownerUid)
     }
     // Обновить expenseFromFirestore для новых моделей (используется только для batch-загрузки, если нужно)
     static func expenseFromFirestore(doc: QueryDocumentSnapshot, members: [Member], splits: [Split]) -> Expense? {
@@ -263,5 +289,12 @@ class TripFirestoreService: ObservableObject {
             splits: fixedSplits,
             date: Date(timeIntervalSince1970: date)
         )
+    }
+
+    private static func tripIdFrom(doc: DocumentSnapshot) -> String {
+        if let tripId = doc.data()? ["id"] as? String {
+            return tripId
+        }
+        return doc.documentID
     }
 } 
