@@ -6,6 +6,8 @@ struct TripDetailView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @StateObject private var viewModel = TripDetailViewModel()
     @State private var showingAddExpense = false
+    @Environment(\.dismiss) var dismiss
+    @State private var confirmDelete = false
 
     var body: some View {
         List {
@@ -53,12 +55,23 @@ struct TripDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showingAddExpense = true
-                }) {
-                    Label("Добавить расход", systemImage: "plus")
+                if trip.closed {
+                    Menu {
+                        Button("Восстановить") { restoreTrip() }
+                        Button("Удалить", role: .destructive) { confirmDelete = true }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                } else {
+                    Button(action: { showingAddExpense = true }) {
+                        Label("Добавить расход", systemImage: "plus")
+                    }
                 }
             }
+        }
+        .alert("Удалить поездку безвозвратно?", isPresented: $confirmDelete) {
+            Button("Удалить", role: .destructive) { deleteTrip() }
+            Button("Отмена", role: .cancel) {}
         }
         .sheet(isPresented: $showingAddExpense) {
             AddExpenseView(trip: trip)
@@ -73,5 +86,16 @@ struct TripDetailView: View {
     }
     private func subscribeDetail() {
         viewModel.subscribe(tripId: trip.id.uuidString)
+    }
+
+    private func restoreTrip() {
+        let listVM = TripListViewModel(authVM: authVM)
+        listVM.setArchived(trip, archived: false)
+        dismiss()
+    }
+    private func deleteTrip() {
+        let listVM = TripListViewModel(authVM: authVM)
+        listVM.deleteTrip(trip)
+        dismiss()
     }
 }

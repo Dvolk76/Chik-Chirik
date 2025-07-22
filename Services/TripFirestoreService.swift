@@ -30,6 +30,7 @@ class TripFirestoreService: ObservableObject {
             "currency": trip.currency,
             "created": trip.created.timeIntervalSince1970,
             "closed": trip.closed,
+            "pinned": trip.pinned,
             "ownerUid": trip.ownerUid
         ]
         db.collection("trips").document(trip.id.uuidString).setData(data) { err in
@@ -45,6 +46,7 @@ class TripFirestoreService: ObservableObject {
             "currency": trip.currency,
             "created": trip.created.timeIntervalSince1970,
             "closed": trip.closed,
+            "pinned": trip.pinned,
             "ownerUid": trip.ownerUid
         ]
         db.collection("trips").document(trip.id.uuidString).setData(data) { err in
@@ -199,6 +201,7 @@ class TripFirestoreService: ObservableObject {
               let created = d["created"] as? TimeInterval,
               let closed = d["closed"] as? Bool,
               let ownerUid = d["ownerUid"] as? String else { return nil }
+        let pinned = d["pinned"] as? Bool ?? false
         // id может быть сохранён полем или берём documentID
         let id: UUID = {
             if let idStr = d["id"] as? String, let uuid = UUID(uuidString: idStr) {
@@ -217,6 +220,7 @@ class TripFirestoreService: ObservableObject {
             members: [],
             expenses: [],
             closed: closed,
+            pinned: pinned,
             ownerUid: ownerUid
         )
     }

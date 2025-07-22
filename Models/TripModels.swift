@@ -8,6 +8,7 @@ final class Trip {
     var currency: String = "RUB"
     var created: Date = Date()
     var closed: Bool
+    var pinned: Bool = false
     var ownerUid: String // <--- добавлено для фильтрации по владельцу
     @Relationship var members: [Member]
     @Relationship var expenses: [Expense]
@@ -19,6 +20,7 @@ final class Trip {
         members: [Member] = [],
         expenses: [Expense] = [],
         closed: Bool = false,
+        pinned: Bool = false,
         ownerUid: String // <--- добавлено
     ) {
         self.id = UUID()
@@ -28,10 +30,11 @@ final class Trip {
         self.members = members
         self.expenses = expenses
         self.closed = closed
+        self.pinned = pinned
         self.ownerUid = ownerUid // <--- добавлено
     }
     
-    init(id: UUID, name: String, currency: String = "RUB", created: Date = Date(), members: [Member] = [], expenses: [Expense] = [], closed: Bool = false, ownerUid: String) {
+    init(id: UUID, name: String, currency: String = "RUB", created: Date = Date(), members: [Member] = [], expenses: [Expense] = [], closed: Bool = false, pinned: Bool = false, ownerUid: String) {
         self.id = id
         self.name = name
         self.currency = currency
@@ -39,6 +42,7 @@ final class Trip {
         self.members = members
         self.expenses = expenses
         self.closed = closed
+        self.pinned = pinned
         self.ownerUid = ownerUid
     }
     

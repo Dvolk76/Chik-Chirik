@@ -73,15 +73,34 @@ struct TripListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(viewModel.trips) { trip in
-                    NavigationLink(destination: TripDetailView(trip: trip).environmentObject(authVM)) {
-                        Text("\(trip.name) [id: \(trip.id)]")
-                            .onAppear {
-                                print("TripListView: onAppear for trip: id = \(trip.id), name = \(trip.name)")
-                            }
+                // Sections: pinned, active, archived
+                let pinnedTrips = viewModel.trips.filter { !$0.closed && $0.pinned }.sorted { $0.created > $1.created }
+                let activeTrips = viewModel.trips.filter { !$0.closed && !$0.pinned }.sorted { $0.created > $1.created }
+                let archivedTrips = viewModel.trips.filter { $0.closed }.sorted { $0.created > $1.created }
+
+                if !pinnedTrips.isEmpty {
+                    Section("Закреплённые") {
+                        tripRows(for: pinnedTrips)
+                    }
+                }
+
+                if !activeTrips.isEmpty {
+                    Section("Поездки") {
+                        tripRows(for: activeTrips)
+                    }
+                }
+
+                if !archivedTrips.isEmpty {
+                    Section("Архив") {
+                        tripRows(for: archivedTrips)
                     }
                 }
             }
+            .alert("Переместить в архив?", isPresented: $archiveAlertShown, presenting: archivingTrip) { trip in
+                Button("Архивировать", role: .destructive) { viewModel.setArchived(trip, archived: true) }
+                Button("Отмена", role: .cancel) {}
+            } message: { _ in Text("Вы всегда сможете восстановить поездку из архива.") }
+            // pin confirmation via secondary tap on swipe button (no alert)
             .navigationTitle("Поездки")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -186,6 +205,51 @@ struct TripListView: View {
     private func subscribeTrips() {
         if let uid = authVM.linkedOwnerUid ?? authVM.user?.uid {
             viewModel.subscribeTrips(ownerUid: uid)
+        }
+    }
+
+    // MARK: - Archive helpers
+    @State private var archiveAlertShown = false
+    @State private var archivingTrip: Trip?
+    private func confirmArchive(_ trip: Trip) {
+        archivingTrip = trip
+        archiveAlertShown = true
+    }
+
+    // no pin alert needed; relies on button tap
+
+    // MARK: - Helper to generate rows
+    @ViewBuilder private func tripRows(for trips: [Trip]) -> some View {
+        ForEach(trips) { trip in
+            NavigationLink(destination: TripDetailView(trip: trip).environmentObject(authVM)) {
+                HStack {
+                    Text(trip.name)
+                    if trip.closed {
+                        Spacer()
+                        Image(systemName: "archivebox")
+                            .foregroundColor(.secondary)
+                    } else if trip.pinned {
+                        Spacer()
+                        Image(systemName: "pin.fill")
+                            .foregroundColor(.orange)
+                    }
+                }
+            }
+            // Swipe Actions
+            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                if trip.pinned {
+                    Button("Открепить") { viewModel.setPinned(trip, pinned: false) }.tint(.gray)
+                } else if !trip.closed {
+                    Button("Закрепить") { viewModel.setPinned(trip, pinned: true) }.tint(.orange)
+                }
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                if trip.closed {
+                    Button("Восстановить") { viewModel.setArchived(trip, archived: false) }.tint(.blue)
+                } else {
+                    Button("Архив") { confirmArchive(trip) }.tint(.orange)
+                }
+            }
         }
     }
 }

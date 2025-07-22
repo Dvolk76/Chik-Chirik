@@ -55,7 +55,31 @@ class TripListViewModel: ObservableObject {
         }
     }
 
+    func setArchived(_ trip: Trip, archived: Bool) {
+        var updated = trip
+        updated.closed = archived
+        tripService.updateTrip(updated)
+        if archived {
+            // локально обновим массив для мгновенного отклика
+            if let idx = trips.firstIndex(where: { $0.id == trip.id }) {
+                trips[idx].closed = true
+            }
+        } else {
+            if let idx = trips.firstIndex(where: { $0.id == trip.id }) {
+                trips[idx].closed = false
+            }
+        }
+    }
     func deleteTrip(_ trip: Trip) {
         tripService.deleteTrip(trip)
+    }
+
+    func setPinned(_ trip: Trip, pinned: Bool) {
+        var updated = trip
+        updated.pinned = pinned
+        tripService.updateTrip(updated)
+        if let idx = trips.firstIndex(where: { $0.id == trip.id }) {
+            trips[idx].pinned = pinned
+        }
     }
 } 
