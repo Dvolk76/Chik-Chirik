@@ -1,0 +1,38 @@
+disabled_rules:
+  - trailing_whitespace
+  - identifier_name
+
+opt_in_rules:
+  - cyclomatic_complexity
+  - function_body_length
+  - file_length
+  - type_body_length
+  - explicit_init
+
+line_length:
+  warning: 120
+  error: 120
+
+cyclomatic_complexity:
+  warning: 15
+  error: 25
+
+excluded:
+  - Carthage
+  - Pods
+  - build
+
+# Запретить print и TODO
+custom_rules:
+  no_print:
+    included: "*.swift"
+    name: "No print()"
+    regex: "print\s*\("
+    message: "Использование print() запрещено правилами code style."
+    severity: error
+  no_todo:
+    included: "*.swift"
+    name: "No TODO:"
+    regex: "TODO:"
+    message: "TODO запрещён правилами code style."
+    severity: error 

@@ -92,6 +92,7 @@
 		C745B9042E301E590057233C /* RegisterLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterLoginView.swift; sourceTree = "<group>"; };
 		C745B9062E30222F0057233C /* LoginWithLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithLoginView.swift; sourceTree = "<group>"; };
 		C745B9082E302A470057233C /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
+		C7C653642E317FE7005B1EED /* Chick-Chirik.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "Chick-Chirik.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +205,7 @@
 		C7239F972E26E4ED00FCEE64 = {
 			isa = PBXGroup;
 			children = (
+				C7C653642E317FE7005B1EED /* Chick-Chirik.xcodeproj */,
 				C7211D2B2E2BA9500026983B /* App */,
 				C7211D2E2E2BA9500026983B /* Models */,
 				C7211D302E2BA9500026983B /* Resources */,
@@ -222,6 +224,11 @@
 				C74141FF2E29A3C1008385EC /* Chick-ChirikTests.xctest */,
 				C741420C2E29A3DC008385EC /* Chick-ChirikUITests.xctest */,
 			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C7C653652E317FE7005B1EED /* Products */ = {
+			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -327,6 +334,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C7239FA12E26E4ED00FCEE64 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C7C653652E317FE7005B1EED /* Products */;
+					ProjectRef = C7C653642E317FE7005B1EED /* Chick-Chirik.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C7239F9F2E26E4ED00FCEE64 /* Chick-Chirik */,
